@@ -13,6 +13,7 @@ Lobby:
 3. Calendar
 4. StarrDrop
 5. StarrRoad
+6. SCID
 
 More
 
