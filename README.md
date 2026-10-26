@@ -13,14 +13,15 @@ Lobby:
 3. Calendar
 4. StarrDrop
 5. StarrRoad
+
 More
 
-Сервер помогал делать AI Claude всемилюбимый
+Сервер помогал делать AI Claude всеми любимый
 
 # Android, iOS клиенты ищите сами.
 
-## Credits ##
-[Telegram FidBon](https://t.me/FidBon_Developer)
-
 ![IMG](https://github.com/veist0ff/silence/blob/main/photo_2026-10-27_01-44-43.jpg)
 ![IMG2](https://github.com/veist0ff/silence/blob/main/photo_2026-10-27_01-44-35.jpg)
+
+## Credits ##
+Telegram: [FidBon](https://t.me/FidBon_Developer)
