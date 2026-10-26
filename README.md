@@ -5,20 +5,22 @@
 Он ради вас дропает свой сурс Silence Brawl на v64!
 
 # На сервере есть:
+Battle
 
-Лобби:
-1. Румы
-2. Клубы
-Прочее кароч
-
-Бои почти фулл
+Lobby:
+1. Rooms
+2. Club
+3. Calendar
+4. StarrDrop
+5. StarrRoad
+More
 
 Сервер помогал делать AI Claude всемилюбимый
 
-Android, iOS клиенты ищите сами.
+# Android, iOS клиенты ищите сами.
 
 ## Credits ##
 [Telegram FidBon](https://t.me/FidBon_Developer)
 
-![IMG](https://t.me/silencebrawl/1788)
-![IMG2](https://t.me/silencebrawl/1656)
+![IMG](https://github.com/veist0ff/silence/blob/main/photo_2026-10-27_01-44-43.jpg)
+![IMG2](https://github.com/veist0ff/silence/blob/main/photo_2026-10-27_01-44-35.jpg)
