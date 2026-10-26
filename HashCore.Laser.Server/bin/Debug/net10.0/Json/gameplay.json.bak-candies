@@ -1,0 +1,320 @@
+{
+    "chronos_files": {
+        "stranger_things": {
+            "hash": "e5d669bd030cf2623e31ffe3dbfebb9ff845e92b",
+            "filename": "8a1bf81c-bedb-4070-bab3-22e94af96b76_collab_stranger_things.sc"
+        },
+        "stranger_things_roguelite": {
+            "hash": "bfc56098d091df99a19ab61fdfed79e8dfa61def",
+            "filename": "e35236f1-562d-4f46-b86f-a17dc57f8f1e_collab_stranger_things_roguelite.sc"
+        },
+        "stranger_things_quests": {
+            "hash": "c35459b5f3b2eb73af14a692a1923e2a45f7e41c",
+            "filename": "fe035652-bd4f-42ef-913b-e3ff47ea6ddf_77f83ef3_9f72_4994_9cbd_3e6775ed7e18_quests_stranger_things.sc"
+        },
+        "rush_sugar": {
+            "hash": "ac0b8022ea17801856c147fa273604b8f81f2903",
+            "filename": "e05ed4a3-1e14-45ff-b07c-719d47c0612e_rush_sugar.sc"
+        },
+        "challenge_ultra": {
+            "hash": "62ac676e25ff17a3ef4fd62fd2133ac17bbeea00",
+            "filename": "00ba44d4-88f2-4f6d-8c9f-7462ef0493c8_challenge_ultra.sc"
+        },
+        "challenge_kit_mariano": {
+            "hash": "cc6c859c3433176f06f3bda9d2a82b9379354742",
+            "filename": "0853fec5-e833-4bbd-90e2-888b131efd62_challenge_kit_mariano.sc"
+        },
+        "challenge_brawloween2022": {
+            "hash": "65505fe44ac0407c697272db02799fdd157216e3",
+            "filename": "0c00ed30-7c20-49b8-8fb9-f4f27f449a6b_challenge_brawloween2022.sc"
+        },
+        "challenge_duels_masters": {
+            "hash": "25a5b90da923da01191eeb02d4523b322fe00a2c",
+            "filename": "12de07b5-cf35-47fb-a027-c51fa6fcf979_challenge_duels_masters.sc"
+        },
+        "challenge_uno": {
+            "hash": "fbaf9c300f7b0d47ad4dc2ec764b417a78294058",
+            "filename": "130cdbc0-75ec-4fe2-b2a8-b32193631302_fc8b84e6_f2a0_4668_bec0_477b30530a99_challenge_uno.sc"
+        },
+        "challenge_brawloween2024": {
+            "hash": "6856d8d025cb1e1c10926c4b893fe456a1aac4a6",
+            "filename": "157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc"
+        },
+        "challenge_phoenix": {
+            "hash": "f5a0db5bb7b7576068d96ba51e0d28197377bd82",
+            "filename": "1a8d4562-27c3-4337-927b-1fd712c1e53c_challenge_phoenix.sc"
+        },
+        "challenge_moba": {
+            "hash": "5afd742fd6719d234a21b7f772e428ca792240f5",
+            "filename": "20576345-24b0-4fa9-83c6-0efe843f13ed_challenge_moba.sc"
+        },
+        "challenge_cartoon": {
+            "hash": "ef156201cb6bb10b9a4e2022ec478a708d35ac5d",
+            "filename": "217d3283-18a0-4ca1-88a8-c04e0b4f5eec_challenge_cartoon.sc"
+        },
+        "challenge_bonnie_greek": {
+            "hash": "d7a306701fdd6d5816abc7075fea1e30fa9ad0b5",
+            "filename": "47e6ef00-61c7-4332-8d5e-4791265aad9a_challenge_bonnie_greek.sc"
+        },
+        "challenge_sb": {
+            "hash": "b272512d122f5b8e21f91f32cf8a28a308fdcd3f",
+            "filename": "48ab4c61-da32-4120-aabe-0f6c08e3976f_challenge_sb.sc"
+        },
+        "challenge_bling_spray": {
+            "hash": "fb2d29d6f02e1b30207890860c29986968454311",
+            "filename": "48fc86f4-5fed-4766-bbda-e436515503c5_challenge_bling_spray.sc"
+        },
+        "challenge_sprayslaunch": {
+            "hash": "2837f5e7cdd7fc12c820dce098c615b22346d074",
+            "filename": "4c3b6fdb-0df8-48ee-89af-6569399f36e3_challenge_sprayslaunch.sc"
+        },
+        "challenge_kit_guismo": {
+            "hash": "a8d82b5d58a4312601b62085db4ac3e546838003",
+            "filename": "50e320c5-7db0-4ed5-8265-bce56e78f7b1_challenge_kit_guismo.sc"
+        },
+        "challenge_anime": {
+            "hash": "e85214ee30df1c130df23fed50704a075c17293d",
+            "filename": "5c9cc614-0baf-42d3-86da-5347e0d3b5ee_challenge_anime.sc"
+        },
+        "challenge_bling": {
+            "hash": "0db2ef68f7f75930c68870c5e3b1c9fbeccd1eab",
+            "filename": "7a221af1-1664-443b-acc8-f0786315fb37_challenge_bling.sc"
+        },
+        "challenge_heist_masters": {
+            "hash": "94f4e591ffbe92958db2baaaf3fff749e886782b",
+            "filename": "82697eac-eba6-462e-8afc-1b062a0f9010_challenge_heist_masters.sc"
+        },
+        "challenge_bibi_retropolis": {
+            "hash": "6d3b90f69f5a80f401276bdea828fc97142484c2",
+            "filename": "83c305f0-bdb1-4649-bfb6-a87895ebed09_challenge_bibi_retropolis.sc"
+        },
+        "challenge_goldenkawaii": {
+            "hash": "58a1457f6ba0e56be06214a7caeedcdba3837cce",
+            "filename": "8951779f-538a-429e-950e-0c2f915156ae_challenge_goldenkawaii.sc"
+        },
+        "challenge_masters_solo": {
+            "hash": "e1bc3cfe99c0b343ee608269583bfed6c58d374a",
+            "filename": "8fc2a774-f275-4240-a845-0f956a0bd291_challenge_masters_solo.sc"
+        },
+        "challenge_janet_mha": {
+            "hash": "7432b32e64d5d671206fa250a0e84b4ed3a8cc58",
+            "filename": "90d13c4e-48ab-44ea-944e-b98532007203_challenge_janet_mha.sc"
+        },
+        "challenge_gym": {
+            "hash": "aa9e243b423d5213c40408d56a567774e575acb3",
+            "filename": "a4b823f4-2656-47f2-beb5-fb43a3cf7c2c_challenge_gym.sc"
+        },
+        "challenge_masters_duo": {
+            "hash": "fa093b4fde8effb8789f0d52805905991ca2b92c",
+            "filename": "a71beec9-c21b-4fe3-a364-b33680075564_challenge_masters_duo.sc"
+        },
+        "challenge_brawlidays2023": {
+            "hash": "358cc67e41cbb752b6a5a148749c88e2449d1469",
+            "filename": "b51a2bc6-66d1-4ce5-8d8c-1679f3b3de39_challenge_brawlidays2023.sc"
+        },
+        "challenge_godeik": {
+            "hash": "f08fc21e20d646082964655beb2b6eeab25890d3",
+            "filename": "c387b812-d486-44e8-8bb3-734b80fca7ca_challenge_godeik.sc"
+        },
+        "challenge_brawloween2024_2": {
+            "hash": "82040537547002ae2f85da04fd223c423aaf7618",
+            "filename": "d35569bd-80ec-4007-82c0-b0bd9b6381b3_challenge_brawloween2024.sc"
+        },
+        "challenge_kit_yuki": {
+            "hash": "77010418a3962b06ee753728b4d430e552d08b44",
+            "filename": "d3d998da-da9e-41f2-aa57-685d6d5b4296_challenge_kit_yuki.sc"
+        },
+        "challenge_amber_fantasy": {
+            "hash": "8068f6562f7e7cc34a1f2f26c566bab37e0723a8",
+            "filename": "f32c92a8-906b-48f9-932c-1aaab3651b49_challenge_amber_fantasy.sc"
+        },
+        "brawloween_2025": {
+            "hash": "989794eb469f70d7adb5af36f19ed4ebc884d3da",
+            "filename": "bf981a9d-1fa5-4657-a0ff-ffff926704c2_fb2514eb_da1e_49bb_98ad_3078b586b2e7_collab_brawloween_2025__1_.sc"
+        },
+        "brawloween_2025_quests": {
+            "hash": "08105a0be65296cf4049d35e46f9bd046d8bc582",
+            "filename": "50762ae7-e874-4de3-98c8-4f6629d3f632_3d0783cc_4776_407d_97b1_134e4f22b52f_quests_brawloween_2025.sc"
+        },
+        "brawloween_2025_bosses": {
+            "hash": "dcd07fd8776d471ad09621b449b77f7214885527",
+            "filename": "f04713d5-207d-41e7-aa31-cdbcb862f108_bb43e229_fd00_4b69_8f62_cd6c341577ad_game_mode_bosses_brawloween_2025__1_.sc"
+        }
+    },
+    "slots": [
+        {
+            "slot": 1,
+            "location": 0,
+            "game_modes": [
+                "GemGrab"
+            ]
+        },
+        {
+            "slot": 2,
+            "location": 13,
+            "game_modes": [
+                "Showdown"
+            ]
+        },
+        {
+            "slot": 3,
+            "location": 0,
+            "game_modes": [
+                "Bounty"
+            ]
+        },
+        {
+            "slot": 4,
+            "location": 0,
+            "game_modes": [
+                "BrawlBall"
+            ]
+        },
+        {
+            "slot": 5,
+            "location": 0,
+            "game_modes": [
+                "Knockout"
+            ]
+        },
+        {
+            "slot": 43,
+            "location": 0,
+            "game_modes": [
+                "GemGrab",
+                "Bounty",
+                "Knockout"
+            ]
+        },
+        {
+            "slot": 36,
+            "chronos_file": "brawloween_2025"
+        },
+        {
+            "slot": 40,
+            "location": 0,
+            "game_modes": [
+                "Showdown"
+            ],
+            "chronos_file_entry": {
+                "hash": "",
+                "filename": ""
+            }
+        },
+        {
+            "slot": 44,
+            "location": 0,
+            "game_modes": [
+                "Showdown"
+            ],
+            "chronos_file": "rush_sugar"
+        },
+        {
+            "slot": 45,
+            "location": 0,
+            "game_modes": [
+                "MegaBoss"
+            ],
+            "boss_character": 16000273,
+            "chronos_file": "brawloween_2025_bosses"
+        },
+        {
+            "slot": 54,
+            "location": 0,
+            "game_modes": [
+                "Roguelite"
+            ],
+            "chronos_file_entry": {
+                "hash": "",
+                "filename": ""
+            }
+        }
+    ],
+    "challenge": {
+        "enabled": true,
+        "key": "brawloween_1",
+        "challenge_id": 7,
+        "chronos_file": "challenge_brawloween2024",
+        "max_lives": 3,
+        "lives_per_purchase": 1,
+        "lives_prices": [
+            30,
+            60,
+            90
+        ],
+        "infinite_lives": false,
+        "stages": [
+            {
+                "slot": 20,
+                "game_modes": [
+                    "GemGrab"
+                ],
+                "wins": 2
+            },
+            {
+                "slot": 21,
+                "game_modes": [
+                    "BrawlBall"
+                ],
+                "wins": 2
+            },
+            {
+                "slot": 22,
+                "game_modes": [
+                    "Knockout"
+                ],
+                "wins": 2
+            },
+            {
+                "slot": 23,
+                "game_modes": [
+                    "Bounty"
+                ],
+                "wins": 2
+            }
+        ],
+        "win_rewards": [
+            {
+                "win": 1,
+                "type": "Coin",
+                "count": 100
+            },
+            {
+                "win": 2,
+                "type": "PowerPoints",
+                "count": 100
+            },
+            {
+                "win": 3,
+                "type": "Coin",
+                "count": 200
+            },
+            {
+                "win": 4,
+                "type": "Bling",
+                "count": 100
+            },
+            {
+                "win": 5,
+                "type": "PowerPoints",
+                "count": 200
+            },
+            {
+                "win": 6,
+                "type": "Coin",
+                "count": 300
+            },
+            {
+                "win": 7,
+                "type": "Gems",
+                "count": 30
+            }
+        ],
+        "completion_reward": {
+            "type": "Skin",
+            "count": 1,
+            "skin": 159
+        }
+    },
+    "collab_id": 11
+}

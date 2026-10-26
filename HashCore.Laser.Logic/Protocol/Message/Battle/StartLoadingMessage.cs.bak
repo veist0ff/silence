@@ -1,0 +1,359 @@
+﻿using System;
+using System.Collections.Generic;
+using PmdrKv64.Logic.Battle.Structures;
+
+using PmdrKv64.Logic.Message;
+using PmdrKv64.Titan.Math;
+ 
+using PmdrKv64.Server;
+
+namespace PmdrKv64.Logic.Message.Battle
+{
+    public class StartLoadingMessage : GameMessage
+    {
+        public List<BattlePlayer> Players;
+        public int OwnIndex;
+        public int TeamIndex;
+
+        public int LocationId;
+        public int GameMode;
+        public int GameType;
+        public int SpectateMode;
+        public BattlePlayerMap map;
+        public int MapMode;
+        public List<int> Modifiers;
+
+        public StartLoadingMessage() : base()
+        {
+            Players = new List<BattlePlayer>();
+            MapMode = 1;
+            Modifiers = new();
+        }
+
+        public void SetPlayerMap(BattlePlayerMap map)
+        {
+            if (map != null)
+            {
+                MapMode = 5;
+                this.map = map;
+                LocationId = 0;
+                GameMode = map.GMV;
+            }
+        }
+public static byte[] HexStringToByteArray(string hex)
+        {
+            hex = hex.Replace(" ", "").Replace("-", "");
+            if (string.IsNullOrEmpty(hex))
+                throw new ArgumentNullException(nameof(hex));
+
+            if (hex.Length % 2 != 0)
+                throw new ArgumentException("Hex string length must be even.", nameof(hex));
+
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < hex.Length; i += 2)
+            {
+                string byteValue = hex.Substring(i, 2);
+                bytes[i / 2] = Convert.ToByte(byteValue, 16);
+            }
+
+            return bytes;
+        }
+        public override void Encode()
+        {
+            
+           //  string hex = "00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 0f 6a f1 25 01 00 00 00 06 73 70 72 6b 64 76 a4 01 ae 8b da 1a 80 83 81 29 00 00 00 00 9a 01 00 00 00 00 00 00 00 00 00 0f 42 40 01 10 00 01 0b 17 8c 01 17 bf 03 3e 00 3e 01 17 a5 09 00 00 00 00 00 00 01 05 34 97 02 34 91 02 34 86 02 34 9d 01 34 1c 00 01 05 84 01 1a 84 01 04 84 01 05 84 01 0f 84 01 af 01 1d 00 00 00 00 00 00 01 00 00 00 00 00 7f 7f 7f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 01 00 01 01 00 00 0f bc 0b 04 00 00 00 00 00 00 00 00 00 00 00";
+         //    Stream.WriteBytesWithoutLength(HexStringToByteArray(hex), HexStringToByteArray(hex).Length);
+          //   return;
+
+            // New implementation: Write the equivalent values using Stream.Write* methods
+/*
+            var ByteStream = Stream;
+        ByteStream.WriteInt(1); // plr count
+        ByteStream.WriteInt(0); // own 
+        ByteStream.WriteInt(0); // true team
+        //+80 int +88 byte +136 vint +56 string +64 bool
+        ByteStream.WriteInt(1);
+        {
+                 ByteStream.WriteLong(1);
+        }
+            
+            ByteStream.WriteVInt(1);
+
+            ByteStream.WriteString("stealdev");
+            ByteStream.WriteVInt(5000);
+            ByteStream.WriteVInt(GlobalId.CreateGlobalId(28, 0));
+            ByteStream.WriteVInt(GlobalId.CreateGlobalId(43,0));
+            ByteStream.WriteVInt(1);
+
+            ByteStream.WriteVInt(4);
+                   ByteStream.WriteDataReference(100, 1);
+             ByteStream.WriteDataReference(28, -1);
+              ByteStream.WriteDataReference(28, -1);
+            ByteStream.WriteDataReference(52, -1);
+             ByteStream.WriteDataReference(76, -1);
+             ByteStream.WriteDataReference(0, 0);
+
+
+
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteInt(0);
+            ByteStream.WriteByte(1); // вообще тут short но думаю никто особо не заметит
+            // hero setup
+            {
+                ByteStreamHelper.WriteDataReference(ByteStream, GlobalId.CreateGlobalId(16, 0));
+                if (ByteStream.WriteBoolean(true)) // without this - crash(btw)
+                {
+                    ByteStream.WriteVInt(11);
+                                  ByteStream.WriteDataReference(0, 0);
+                                          ByteStream.WriteDataReference(0, 0);
+                                                  ByteStream.WriteDataReference(0, 0);
+                                                          ByteStream.WriteDataReference(0, 0);
+                                                                  ByteStream.WriteDataReference(0, 0);
+                                                                          ByteStream.WriteDataReference(0, 0);
+                                                                                  ByteStream.WriteDataReference(0, 0);
+
+
+                        ByteStream.WriteVInt(0);
+                            ByteStream.WriteVInt(0);
+
+                          ByteStreamHelper.WriteDataReference(ByteStream, 0);
+                                     ByteStreamHelper.WriteDataReference(ByteStream, 0);
+
+                }
+                if (ByteStream.WriteBoolean(false))
+                {
+                    // todo emotes
+                }
+                if (ByteStream.WriteBoolean(false))
+                {
+                    // todo sprays
+                }
+                 ByteStreamHelper.WriteDataReference(ByteStream,0);
+                  ByteStreamHelper.WriteDataReference(ByteStream, 0);
+                   ByteStreamHelper.WriteDataReference(ByteStream, 0);
+            
+
+
+            ByteStream.WriteBoolean(false);
+            ByteStream.WriteBoolean(false);
+            ByteStream.WriteByte(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteBoolean(false);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+
+            ByteStream.WriteBoolean(false);
+            ByteStream.WriteBoolean(false);
+            ByteStream.WriteBoolean(false);
+
+
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteVInt(0);
+
+
+            ByteStream.WriteVInt(0);
+            ByteStream.WriteBoolean(false);
+        }
+
+
+        ByteStream.WriteInt(0);// array
+        ByteStream.WriteInt(0);// array
+        ByteStream.WriteInt(0);
+
+        ByteStream.WriteVInt(0);//GameMode
+        ByteStream.WriteVInt(1);
+        ByteStream.WriteVInt(3);//gamemode varidatino
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteBoolean(false);
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteVInt(0);
+
+        ByteStreamHelper.WriteDataReference(ByteStream, GlobalId.CreateGlobalId(15, 0));
+         ByteStream.WriteBoolean(false);
+        
+        ByteStream.WriteBoolean(false);
+        ByteStream.WriteBoolean(false);
+
+        ByteStream.WriteVInt(0);//round
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteVInt(0);
+
+        ByteStream.WriteBoolean(false);
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteVInt(0);
+        ByteStream.WriteVInt(0);
+
+
+         ByteStreamHelper.WriteDataReference(ByteStream, 0);
+         ByteStreamHelper.WriteDataReference(ByteStream, 0);
+         ByteStreamHelper.WriteDataReference(ByteStream, 0);
+*/
+
+
+        Stream.WriteInt(1);
+        Stream.WriteInt(0);
+        Stream.WriteInt(0);
+
+        Stream.WriteInt(1);
+        {
+            Stream.WriteLong(1);
+            {
+                Stream.WriteBoolean(true);
+                var ByteStream = Stream;
+                {
+                 
+                    ByteStream.WriteString("stealdev");
+                    ByteStream.WriteVInt(5000);
+                    ByteStream.WriteVInt(GlobalId.CreateGlobalId(28, 0));
+                    ByteStream.WriteVInt(GlobalId.CreateGlobalId(43,0));
+                    ByteStream.WriteVInt(1);
+                }
+                Stream.WriteVInt(4);
+                
+                ByteStream.WriteDataReference(100, 1);
+                ByteStream.WriteDataReference(28, -1);
+                ByteStream.WriteDataReference(28, -1);
+                ByteStream.WriteDataReference(52, -1);
+                ByteStream.WriteDataReference(76, -1);
+                ByteStream.WriteDataReference(0, 0);
+                
+            }
+
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteInt(0);
+            Stream.WriteByte(1);
+            {
+                ByteStreamHelper.WriteDataReference(Stream, GlobalId.CreateGlobalId(16, 0));
+                Stream.WriteBoolean(true);
+                {
+                    Stream.WriteVInt(0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+
+                    Stream.WriteInt(0);
+                    Stream.WriteInt(0);
+                 
+
+                    Stream.WriteDataReference(0, 0);
+                    Stream.WriteDataReference(0, 0);
+                }
+                Stream.WriteBoolean(false);
+                Stream.WriteBoolean(false);
+
+                Stream.WriteDataReference(0, 0);
+                Stream.WriteDataReference(0, 0);
+                Stream.WriteDataReference(0, 0);
+
+
+                
+            }
+
+            Stream.WriteBoolean(false);
+            Stream.WriteBoolean(false);
+
+            Stream.WriteByte(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteBoolean(false);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteBoolean(false);
+            Stream.WriteBoolean(false);
+            Stream.WriteBoolean(false);
+
+             
+            Stream.WriteVInt(0);
+
+            Stream.WriteVInt(0);
+       
+
+       
+            Stream.WriteVInt(0);
+            Stream.WriteBoolean(false);
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+        Stream.WriteInt(0);
+        Stream.WriteInt(0);
+
+        Stream.WriteInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteBoolean(false);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteDataReference(15,122);
+        Stream.WriteBoolean(false);
+
+        Stream.WriteBoolean(false);
+        Stream.WriteBoolean(false);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteBoolean(false);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteVInt(0);
+        Stream.WriteDataReference(0);
+        Stream.WriteDataReference(0);
+        Stream.WriteDataReference(0);
+
+
+
+
+
+
+
+LogByteCount();
+            Logger.Print("[startloading::init]complete");
+        }
+        
+              private void LogByteCount()
+        {
+            // Получаем текущее количество записанных байтов
+            int byteCount = Stream.GetOffset();
+            Logger.Print($"[startloading::bytecount] Total bytes written: {byteCount}");
+        }
+        public override int GetMessageType()
+        {
+            return 20559;
+        }
+
+        public override int GetServiceNodeType()
+        {
+            return 4;
+        }
+    }
+}

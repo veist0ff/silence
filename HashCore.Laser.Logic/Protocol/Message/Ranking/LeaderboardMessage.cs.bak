@@ -1,0 +1,58 @@
+namespace PmdrKv64.Logic.Message.Ranking
+{
+    using PmdrKv64.Logic.Avatar;
+    using PmdrKv64.Logic.Home;
+    using PmdrKv64.Logic.Club;
+     
+    using System.Reflection.Emit;
+
+    public class LeaderboardMessage : GameMessage
+    {
+        public int LeaderboardType { get; set; }
+
+        public List<KeyValuePair<ClientHome, ClientAvatar>> Avatars;
+        public List<Alliance> AllianceList;
+        public long OwnAvatarId;
+        public string Region { get; set; }
+        public int HeroDataId;
+
+        public LeaderboardMessage() : base()
+        {
+            Avatars = new List<KeyValuePair<ClientHome, ClientAvatar>>();
+            AllianceList = new List<Alliance>();
+            LeaderboardType = 1;
+        }
+
+        public override void Encode()
+        {
+            int playerIndex = 1;
+            Stream.WriteVInt(1);
+            Stream.WriteVInt(2);
+            ByteStreamHelper.WriteDataReference(Stream,HeroDataId);
+            Stream.WriteString(Region); // Region
+            Stream.WriteVInt(0);
+            //goto LABEL_1;
+          
+            Stream.WriteVInt(0);
+            {                    
+            }                 
+                                          
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(playerIndex);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteString("Ru");
+            Stream.WriteVInt(0);
+        }
+
+        public override int GetMessageType()
+        {
+            return 24403;
+        }
+
+        public override int GetServiceNodeType()
+        {
+            return 9;
+        }
+    }
+}

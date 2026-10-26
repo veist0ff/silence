@@ -1,0 +1,75 @@
+﻿namespace PmdrKv64.Logic.Team
+{
+    using PmdrKv64.Logic.Avatar.Structures;
+
+    using PmdrKv64.Logic.Home;
+    public class TeamMember
+    {
+        public bool IsOwner;
+        public long AccountId;
+
+        public int CharacterId;
+        public int SkinId;
+
+        public int HeroTrophies;
+        public int HeroHighestTrophies;
+        public int HeroLevel;
+
+        public int State;
+        public bool IsReady;
+
+        public int SelectedStarPowerId;
+
+        public PlayerDisplayData DisplayData;
+
+        public HomeMode homeMode;
+
+        public int TeamIndex;
+
+        public void Encode(ByteStream stream)
+        {
+            var Stream = stream;
+            stream.WriteBoolean(IsOwner);
+            stream.WriteLong(AccountId);
+
+            ByteStreamHelper.WriteDataReference(stream, CharacterId);
+            ByteStreamHelper.WriteDataReference(stream, SkinId);
+
+            stream.WriteVInt(0);
+            stream.WriteVInt(HeroTrophies);//tropies
+            stream.WriteVInt(HeroHighestTrophies);
+            stream.WriteVInt(HeroLevel);//power
+            stream.WriteVInt(State);
+            stream.WriteVInt(0); // v64
+
+            stream.WriteBoolean(IsReady);
+
+            stream.WriteVInt(TeamIndex); // team
+            stream.WriteVInt(0); // unk
+            stream.WriteVInt(0); // unk
+            stream.WriteVInt(0); // unk
+            stream.WriteVInt(0); // unk
+            stream.WriteVInt(0); // unk
+            stream.WriteVInt(0); // unk
+
+            DisplayData.Encode(stream);
+            
+            Stream.WriteDataReference(0); // Star Power
+            Stream.WriteDataReference(0); // Gadget
+            Stream.WriteDataReference(0); // Gear
+            Stream.WriteDataReference(0); // Gear
+            Stream.WriteDataReference(0);
+            Stream.WriteDataReference(0);
+            Stream.WriteDataReference(0);
+            Stream.WriteDataReference(0);
+            Stream.WriteDataReference(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            
+            stream.WriteVInt(0);
+        }
+    }
+}

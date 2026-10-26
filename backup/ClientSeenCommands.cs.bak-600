@@ -1,0 +1,528 @@
+namespace HashCore.Laser.Logic.Command.Home
+{
+    using System.Collections.Generic;
+
+    using HashCore.Laser.Logic.Home;
+    using HashCore.Laser.Logic.Home.Items;
+    using HashCore.Laser.Logic.Notification;
+    using HashCore.Laser.Server;
+
+    /*
+     * Команды клиента, которых сервер не знал вовсе.
+     * 
+     * Все форматы сняты с реестра клиента `LogicCommandFactory::createCommandManual`
+     * (0x1003bb604) и с `decode` соответствующих классов. Незнакомый тип у нас
+     * обрывает разбор ВСЕГО хода клиента (DecodeCommand возвращает null), поэтому
+     * вместе с каждой такой командой терялись и все остальные команды пакета —
+     * клиент применял их у себя, сервер нет, и состояния расходились.
+     */
+
+    /// <summary>
+    /// Смена схемы управления, тип 508. Одно число — номер схемы.
+    /// </summary>
+    public class LogicChangeControlModeCommand : Command
+    {
+        public int ControlMode;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            ControlMode = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            if (homeMode?.Home == null) return 1;
+            homeMode.Home.ControlMode = ControlMode;
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 508;
+        }
+    }
+
+    /// <summary>
+    /// Тип 511. У клиента это пустая заглушка: execute (0x1003bc454) сразу
+    /// возвращает ноль, а decode — прямой переход на базовый.
+    /// </summary>
+    public class LogicEmptyClientCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 511;
+        }
+    }
+
+    /// <summary>
+    /// Переключатель подсказок в бою, тип 512. Своих полей нет.
+    /// </summary>
+    public class LogicToggleInGameHintsCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 512;
+        }
+    }
+
+    /// <summary>
+    /// Письмо во входящих прочитано, тип 528. Два числа.
+    /// </summary>
+    public class LogicViewInboxNotificationCommand : Command
+    {
+        public int NotificationId;
+        public int Value;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            NotificationId = stream.ReadVInt();
+            Value = stream.ReadVInt();
+        }
+
+        /// <summary>
+        /// LogicViewInboxNotificationCommand::execute (0x1003d5428): письмо ищется
+        /// по номеру (+28); если уже просмотрено — ничего. Иначе ставится флаг
+        /// просмотра и выдаётся награда: часть типов клиент начисляет сам, часть
+        /// ждёт доставку от сервера — всё это в OnView каждого типа.
+        /// </summary>
+        public override int Execute(HomeMode homeMode)
+        {
+            NotificationFactory factory = homeMode?.Home?.NotificationFactory;
+            BaseNotification notification = factory?.Get(NotificationId);
+            if (notification == null)
+            {
+                Logger.Print($"[inbox] просмотр: письма {NotificationId} (тип {Value}) нет");
+                return 0;
+            }
+
+            Logger.Print($"[inbox] просмотр письма {NotificationId} (тип {notification.GetNotificationType()}, уже просмотрено: {notification.IsViewed})");
+            if (notification.IsViewed) return 0;
+            notification.IsViewed = true;
+
+            try
+            {
+                notification.OnView(homeMode);
+            }
+            catch (Exception e)
+            {
+                Logger.Print($"[inbox] награда письма {NotificationId} (тип {notification.GetNotificationType()}): {e.Message}");
+            }
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 528;
+        }
+    }
+
+    /// <summary>
+    /// Возраст игрока, тип 530. Сырой четырёхбайтовый int, не VInt.
+    /// </summary>
+    public class LogicSetPlayerAgeCommand : Command
+    {
+        public int Age;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Age = stream.ReadInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            if (homeMode?.Home == null) return 1;
+            homeMode.Home.PlayerAge = Age;
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 530;
+        }
+    }
+
+    /// <summary>
+    /// Предмет посмотрели, тип 532. Ссылка на данные предмета.
+    /// Отмечаем тем же способом, что и команда 583, иначе всё новое остаётся
+    /// новым после каждого перезахода.
+    /// </summary>
+    public class LogicItemSeenCommand : Command
+    {
+        public int DataGlobalId;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            DataGlobalId = ByteStreamHelper.ReadDataReference(stream);
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            if (homeMode?.Home == null || DataGlobalId <= 0) return 1;
+            
+            homeMode.Home.DataSeenStates ??= new Dictionary<int, int>();
+            homeMode.Home.DataSeenStates[DataGlobalId] = 1;
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 532;
+        }
+    }
+
+    /// <summary>
+    /// Предупреждение об автосборе пропуска посмотрели, тип 539.
+    /// </summary>
+    public class LogicBrawlPassAutoCollectWarningSeenCommand : Command
+    {
+        public int Value;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Value = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 539;
+        }
+    }
+
+    /// <summary>
+    /// Значок на вкладке киберспорта снят, тип 541. Своих полей нет.
+    /// </summary>
+    public class LogicClearESportsHubNotificationCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 541;
+        }
+    }
+
+    /// <summary>
+    /// Тип 544. Клиент кладёт в конфигурацию дома ключ 21 со значением 1 либо
+    /// убирает его (LogicDailyData::addIntValue / removeIntValue). Имени у класса
+    /// в символах нет, поэтому зовём по тому, что он делает.
+    /// </summary>
+    public class LogicSetConfFlag21Command : Command
+    {
+        public bool Enabled;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Enabled = stream.ReadBoolean();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return ConfFlags.Set(homeMode, 21, Enabled);
+        }
+
+        public override int GetCommandType()
+        {
+            return 544;
+        }
+    }
+
+    /// <summary>
+    /// Тип 549. То же самое, но ключ конфигурации 24.
+    /// </summary>
+    public class LogicSetConfFlag24Command : Command
+    {
+        public bool Enabled;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Enabled = stream.ReadBoolean();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return ConfFlags.Set(homeMode, 24, Enabled);
+        }
+
+        public override int GetCommandType()
+        {
+            return 549;
+        }
+    }
+
+    /// <summary>Общая часть для флагов конфигурации, которые ставит сам клиент.</summary>
+    internal static class ConfFlags
+    {
+        public static int Set(HomeMode homeMode, int key, bool enabled)
+        {
+            if (homeMode?.Home == null) return 1;
+
+            homeMode.Home.ConfFlags ??= new Dictionary<int, int>();
+
+            if (enabled) homeMode.Home.ConfFlags[key] = 1;
+            else homeMode.Home.ConfFlags.Remove(key);
+
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// Следующий случайный скин, тип 545. Своих полей нет.
+    /// </summary>
+    public class LogicNextRandomSkinCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 545;
+        }
+    }
+
+    /// <summary>
+    /// Экран скинов посмотрели, тип 548. Одно булево.
+    /// </summary>
+    public class LogicSetSkinUISeenCommand : Command
+    {
+        public bool Seen;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Seen = stream.ReadBoolean();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 548;
+        }
+    }
+
+    /// <summary>
+    /// Настройки приватности, тип 552. LogicAvatarPrivacyPreferences::decode
+    /// (0x1003abee8) читает одно число — набор битов.
+    /// </summary>
+    public class LogicChangeAvatarPrivacyPreferencesCommand : Command
+    {
+        public int Preferences;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Preferences = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            if (homeMode?.Home == null) return 1;
+            homeMode.Home.PrivacyPreferences = Preferences;
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 552;
+        }
+    }
+
+    /// <summary>
+    /// Рекомендованные настройки приватности приняты, тип 553. Своих полей нет.
+    /// </summary>
+    public class LogicUpdateAdvisedPrivacyPreferencesCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 553;
+        }
+    }
+
+    /// <summary>
+    /// Коллаб: сторона выбрана и посмотрена, тип 584. Два булевых.
+    /// </summary>
+    public class LogicCollabSideSeenCommand : Command
+    {
+        public bool Side;
+        public bool Seen;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            Side = stream.ReadBoolean();
+            Seen = stream.ReadBoolean();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 584;
+        }
+    }
+
+    /// <summary>
+    /// Событие клуба посмотрели, тип 587. Три числа.
+    /// </summary>
+    public class LogicJoinClubEventSeenCommand : Command
+    {
+        public int First;
+        public int Second;
+        public int Third;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            First = stream.ReadVInt();
+            Second = stream.ReadVInt();
+            Third = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 587;
+        }
+    }
+
+    /// <summary>
+    /// Билеты клубной копилки посмотрели, тип 590. Своих полей нет.
+    /// </summary>
+    public class LogicAlliancePiggyBankTicketsSeenCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 590;
+        }
+    }
+
+    /// <summary>
+    /// Возраст не указан, тип 592. Два числа.
+    /// </summary>
+    public class LogicSetUnknownAgeCommand : Command
+    {
+        public int First;
+        public int Second;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            First = stream.ReadVInt();
+            Second = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 592;
+        }
+    }
+
+    /// <summary>
+    /// Коллабный «кошелёк или жизнь», тип 600. Два булевых.
+    /// </summary>
+    public class LogicCollabTrickOrTreatCommand : Command
+    {
+        public bool First;
+        public bool Second;
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            First = stream.ReadBoolean();
+            Second = stream.ReadBoolean();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 600;
+        }
+    }
+
+    /// <summary>
+    /// Включение особого режима, тип 601. Своих полей нет.
+    /// </summary>
+    public class LogicActivateSpecialRushModeCommand : Command
+    {
+        public override int Execute(HomeMode homeMode)
+        {
+            homeMode.Home.ActivateRush();
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 601;
+        }
+    }
+
+}

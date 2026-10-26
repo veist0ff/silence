@@ -1,0 +1,127 @@
+v64
+
+
+[d] [ServerConnection::update] starting ...
+[AUTH] Conncect Auth Started
+[d] [LogicDataTable::loadTable] load 30 table
+[Challenge] brawloween_1: id 7, этапов 4, побед 8, жизней 3, файл 157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc
+[EarlyAccess] Gigi slot 40: location=15000965, start=-60
+[Challenge] слот 20: loc=15000007 побед 2
+[Challenge] слот 21: loc=15000132 побед 2
+[Challenge] слот 22: loc=15000502 побед 2
+[Challenge] слот 23: loc=15000083 побед 2
+[Slot] 1: loc=15000932 mode=GemGrab roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 2: loc=15000013 mode=Showdown roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 3: loc=15000022 mode=Bounty roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 4: loc=15000026 mode=BrawlBall roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 5: loc=15001096 mode=Knockout roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 20: loc=15000007 mode=GemGrab roguelite=нет collabId=0 boss=0 rush=нет chronos=157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc
+[Slot] 21: loc=15000132 mode=BrawlBall roguelite=нет collabId=0 boss=0 rush=нет chronos=157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc
+[Slot] 22: loc=15000502 mode=Knockout roguelite=нет collabId=0 boss=0 rush=нет chronos=157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc
+[Slot] 23: loc=15000083 mode=Bounty roguelite=нет collabId=0 boss=0 rush=нет chronos=157bc96a-b7ad-4e2c-9a53-4b7c0686132f_challenge_brawloween2024.sc
+[Slot] 36: loc=0 mode=Bounty roguelite=нет collabId=11 boss=0 rush=нет chronos=bf981a9d-1fa5-4657-a0ff-ffff926704c2_fb2514eb_da1e_49bb_98ad_3078b586b2e7_collab_brawloween_2025__1_.sc
+[Slot] 40: loc=15000965 mode=Showdown roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 43: loc=15001090 mode=GemGrab roguelite=нет collabId=0 boss=0 rush=нет chronos=нет
+[Slot] 44: loc=15001015 mode=Showdown roguelite=нет collabId=0 boss=0 rush=да chronos=e05ed4a3-1e14-45ff-b07c-719d47c0612e_rush_sugar.sc
+[Slot] 45: loc=15001080 mode=MegaBoss roguelite=нет collabId=0 boss=16000270 rush=нет chronos=f04713d5-207d-41e7-aa31-cdbcb862f108_bb43e229_fd00_4b69_8f62_cd6c341577ad_game_mode_bosses_brawloween_2025__1_.sc
+[Slot] 54: loc=15001134 mode=Roguelite roguelite=5 этапов collabId=0 boss=0 rush=нет chronos=нет
+[Probe] слот 54: записано 205 б, прочитано 205 б, этапов после разбора 5, хвост a7 0e 00 00 01 00 04 00 01 01 8c 01 bd 01 00 00 00 ae 98 a7 0e 00 00 00
+[d] [UdpConnectionInfoMessage::Init] start at 0.0.0.0:5555
+[d] [TcpConnectionInfoMessage::Init] start at 0.0.0.0:8282
+[d] [ServerConnection::init] started
+[d] [ServerConnection::connect] new connection
+[d] [MessageManager::Init] type process = 10100
+[Out] 12:49:22.624 20100 ServerHelloMessage acc 0
+[d] [Pepper] голова 0..49: 18-A3-5B-6D-75-25-6D-32-BA-02-DB-05-25-E0-13-97-37-78-FF-31-B2-6D-73-F0-45-0C-95-E9-D5-11-3E-95-78-70-FE-87-3F-C9-39-BE-EB-03-6C-1B-88-45-96-2C-F5 | наш токен: 69-37-19-14-E3-E1-ED-53-48-7A-52-E3-AE-05-4E-4F-40-D9-F6-C6-EB-1B-BD-56
+[d] [Pepper] 10101 расшифрован, 567 б: F5-00-00-00-00-00-00-00-01-00-00-00-28-71-63-43-44-71-43-78-4B-6B-49-31-71-76-47-6D-65-38-41-47-36-53-4E-64-33-55-32-4B-63-46-54-67-62-67-7A-50-53-39-58-41-78-00-00-00-40-00-00-00-01-00-00-00-E2-00-00-00-28-64-64-63-39-34-35-35-36-31-66-37
+[d] [Pepper] данные входа с байта 49
+[Out] 12:49:23.700 23457 LobbyInfoMessage acc 0
+[d] [MessageManager::Init] type process = 10101
+[d] [Login] acc=1 major=64 sha="ddc945561f7c8d4ffba875f5ad081e558b545286" device=iPhone18,2
+[d] [ServerConnection::loadAccount] nexis(1) loaded
+[Out] 12:49:23.894 20104 AuthenticationOkMessage acc 0
+[d] [MenuTheme] тема лобби 148 «Brawloween2025», фон «bgr_brawloween25»
+[d] [GigiShop] акция gigi_early_1: 1 ящ. за 49
+[d] [GigiShop] акция gigi_early_2: 3 ящ. за 129
+[Out] 12:49:23.920 20105 FriendListMessage acc 1
+[Out] 12:49:23.921 24101 OwnHomeDataMessage acc 1
+[Out] 12:49:23.925 24111 AvailableServerCommandMessage acc 1
+[d] [DailyWinTrack] ступеней 6, наград на первой 1
+[Conf] записано 2370 б, прочитано 2370 б, сошлось: да, список chronos на смещении 2040, записей в нём 1
+[Conf] метки: 1.head@0 2.privacy@4 9.release@1979 10.intvalue@1996 11.timed@2029 17.fortune@2035 18.chronos@2040 19.visualoffer@2200 23.news@2234 24.storepromo@2300 26.dailywin@2302 end@2370
+[d] [Msg] неизвестное сообщение 39004, 1 байт
+[d] [UdpMessage::decode] unable to read message type 39004
+[Out] 12:49:24.449 24399 MyAllianceMessage acc 1
+[Out] 12:49:24.449 24311 AllianceStreamMessage acc 1
+[Out] 12:49:24.450 24301 AllianceDataMessage acc 1
+[Out] 12:49:24.450 20207 AllianceOnlineStatusUpdatedMessage acc 1
+[Out] 12:49:24.450 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 14366
+[Out] 12:49:24.452 20207 AllianceOnlineStatusUpdatedMessage acc 1
+[Out] 12:49:24.453 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:49:24.453 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 10110
+[EndClientTurn] Обработка тика: 2, количество команд: 1
+[d] [command::execute] command 226 processed 
+[EndClientTurn] Успешно декодирована команда. ID: 226 (Индекс в пакете: 0)
+[Out] 12:49:24.473 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 14102
+[EndClientTurn] Обработка тика: 3, количество команд: 1
+[d] [command::execute] command 556 processed 
+[EndClientTurn] Успешно декодирована команда. ID: 556 (Индекс в пакете: 0)
+[Out] 12:49:24.477 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:49:24.478 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 14102
+[d] [Msg] неизвестное сообщение 19414, 1 байт
+[d] [UdpMessage::decode] unable to read message type 19414
+[Out] 12:49:25.544 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 14403
+[Leaderboard] type=1 hero=0 regional=False entries=200
+[Out] 12:49:27.253 24403 LeaderboardMessage acc 1
+[Out] 12:49:28.148 23457 LobbyInfoMessage acc 1
+[d] [MessageManager::Init] type process = 15081
+[d] [GetPlayerProfileMessage::GetPlayerProfileMessage] init statistick
+[Out] 12:49:28.217 24113 PlayerProfileMessage acc 1
+[d] [ServerConnection::disconnect] client disconnected.
+[d] [ServerConnection::connect] new connection
+[Out] 12:50:42.505 23457 LobbyInfoMessage acc 0
+[d] [MessageManager::Init] type process = 10101
+[d] [Login] acc=690 major=64 sha="ddc945561f7c8d4ffba875f5ad081e558b545286" device=SM-A266B
+[d] [ServerConnection::loadAccount] Brawler(690) loaded
+[Out] 12:50:43.880 20104 AuthenticationOkMessage acc 0
+[d] [GigiShop] акция gigi_early_1: 1 ящ. за 49
+[d] [GigiShop] акция gigi_early_2: 3 ящ. за 129
+[d] [GigiShop] акция gigi_early_3: 10 ящ. за 299
+[Out] 12:50:43.902 20105 FriendListMessage acc 690
+[Out] 12:50:43.903 24101 OwnHomeDataMessage acc 690
+[Out] 12:50:43.904 24111 AvailableServerCommandMessage acc 690
+[Out] 12:50:43.974 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:50:43.997 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 14366
+[d] [Msg] неизвестное сообщение 39004, 1 байт
+[d] [UdpMessage::decode] unable to read message type 39004
+[Out] 12:50:44.417 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:50:44.418 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:50:44.644 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:50:44.644 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[EndClientTurn] Обработка тика: 1, количество команд: 0
+[Out] 12:50:44.650 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 14102
+[Out] 12:50:44.650 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 18977
+[d] [Matchmake] запрос: unk1=512 dataRef=16000000 слот=2 бойцов=0 unk3=2 есть слот=True
+[d] [Msg] неизвестное сообщение 10113, 8 байт
+[d] [UdpMessage::decode] unable to read message type 10113
+[Out] 12:50:44.655 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 14366
+[Out] 12:50:44.673 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10110
+[Out] 12:50:49.425 23457 LobbyInfoMessage acc 690
+[d] [MessageManager::Init] type process = 10108

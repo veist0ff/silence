@@ -1,0 +1,12 @@
+{
+  "udp_host": "2.26.48.213",
+  "udp_port": 5555,
+  "tcp_port": 8282,
+  "database_username": "FidBon",
+  "database_password": "vk2008god",
+  "database_name": "v64",
+  "ThemeID": 148,
+  "Maintenance": false,
+  "MaintenanceText": "экстренное тех обслуживание без перезагрузки сервера",
+  "new_engine_slots": []
+}

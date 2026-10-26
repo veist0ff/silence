@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);0168;0169;0414;0162;0642;0219;0164;8600;8601;8602;8603;8604;8618;8625;2022;1050;1822</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HashCore.Laser.Logic\HashCore.Laser.Logic.csproj" />
+    <ProjectReference Include="..\HashCore.Laser.Titan\HashCore.Laser.Titan.csproj" />
+    <PackageReference Include="Colorful.Console" Version="1.2.15" />
+    <PackageReference Include="Masuda.Net" Version="6.0.13" />
+    <PackageReference Include="MySql.Data" Version="9.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Listener\**\*.cs" />
+    <Compile Remove="Logger.cs" />
+    <None Update="Json\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\HashCore.Laser.Logic\Assets\**\*" Link="Assets\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\assets\csv_logic\brawler_box_rewards.csv" Link="Assets\csv_logic\brawler_box_rewards.csv" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

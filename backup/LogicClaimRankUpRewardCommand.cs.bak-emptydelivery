@@ -1,0 +1,274 @@
+namespace HashCore.Laser.Logic.Command.Home
+{
+    using System;
+    using HashCore.Laser.Logic.Data;
+    using HashCore.Laser.Logic.Home;
+    using HashCore.Laser.Logic.Home.Gatcha;
+    using HashCore.Laser.Logic.Home.RandomReward;
+    using HashCore.Laser.Logic.Message.Home;
+    using HashCore.Laser.Logic.Util;
+    using HashCore.Laser.Server;
+
+    public class LogicClaimRankUpRewardCommand : Command
+    {
+        public const int Season = 43;
+
+        public int MilestoneId { get; set; }
+        public int UnknownDataId { get; set; }
+        public int Unk2 { get; set; }
+        public int Unk3 { get; set; }
+        public int RequieredMilestone { get; set; }
+
+        public override void Decode(ByteStream stream)
+        {
+            base.Decode(stream);
+
+            MilestoneId = stream.ReadVInt();
+            UnknownDataId = ByteStreamHelper.ReadDataReference(stream);
+            Unk2 = stream.ReadVInt();
+            RequieredMilestone = stream.ReadVInt();
+        }
+
+        public override int Execute(HomeMode homeMode)
+        {
+            Logger.Print($"Claim rankup reward: milestone: {MilestoneId}, data: {UnknownDataId}, unk2: {Unk2}, unk3: {Unk3}");
+
+            if (MilestoneId == 9 || MilestoneId == 10 || MilestoneId == 12)
+            {
+                string name = $"Goal_{MilestoneId}_{Season}_{RequieredMilestone}";
+                if (MilestoneId == 9 && !homeMode.Home.HasPremiumPass)
+                {
+                    return 0;
+                }
+
+                MilestoneData milestoneData = DataTables.Get(DataType.Milestone).GetData<MilestoneData>(name);
+                if (milestoneData == null)
+                {
+                    Logger.Error($"Milestone data is NULL - {name}");
+                    return 0;
+                }
+
+                if (homeMode.Home.BrawlPassTokens < milestoneData.Progress + milestoneData.ProgressStart)
+                {
+                    Logger.Warning($"current progress: {homeMode.Home.BrawlPassTokens}, required progress: {milestoneData.Progress + milestoneData.ProgressStart}");
+                    return 0;
+                }
+                if (MilestoneId == 9 && LogicBitHelper.Get(homeMode.Home.PremiumPassProgress, RequieredMilestone + 2))
+                    return 0;
+                if (MilestoneId == 10 && LogicBitHelper.Get(homeMode.Home.BrawlPassProgress, RequieredMilestone + 2))
+                    return 0;
+                if (MilestoneId == 12 && LogicBitHelper.Get(homeMode.Home.BrawlPassPlusProgress, RequieredMilestone + 2))
+                    return 0;
+
+                if (ProcessReward(homeMode, milestoneData, false, MilestoneId, RequieredMilestone + 2, Season) != 0) return 0;
+
+                if (MilestoneId == 9)
+                    homeMode.Home.PremiumPassProgress = LogicBitHelper.Set(homeMode.Home.PremiumPassProgress, RequieredMilestone + 2, true);
+                if (MilestoneId == 10)
+                    homeMode.Home.BrawlPassProgress = LogicBitHelper.Set(homeMode.Home.BrawlPassProgress, RequieredMilestone + 2, true);
+                if (MilestoneId == 12)
+                    homeMode.Home.BrawlPassPlusProgress = LogicBitHelper.Set(homeMode.Home.BrawlPassPlusProgress, RequieredMilestone + 2, true);
+            }
+            else
+            {
+                return -1;
+            }
+
+            return 0;
+        }
+
+        // --- МЕТОД ДЛЯ BRAWL PASS (Старый тип CSV) ---
+        private int ProcessReward(HomeMode homeMode, MilestoneData milestoneData, bool useSecondaryReward, int track, int idx, int bpSeason)
+        {
+            int type = useSecondaryReward ? milestoneData.SecondaryLvlUpRewardType : milestoneData.PrimaryLvlUpRewardType;
+            string data = !useSecondaryReward ? milestoneData.PrimaryLvlUpRewardData : milestoneData.SecondaryLvlUpRewardData;
+            int count = useSecondaryReward ? milestoneData.SecondaryLvlUpRewardCount : milestoneData.PrimaryLvlUpRewardCount;
+            Console.WriteLine(type);
+            LogicGiveDeliveryItemsCommand command = new LogicGiveDeliveryItemsCommand();
+            bool refreshRandomRewards = false;
+            switch (type)
+            {
+                case 1:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(7) { Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 3:
+                    {
+                        CharacterData character = DataTables.Get(DataType.Character).GetData<CharacterData>(data);
+                        if (homeMode.Avatar.HasHero(character.GetGlobalId()))
+                        {
+                            return ProcessReward(homeMode, milestoneData, true, track, idx, bpSeason);
+                        }
+
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(1) { DataGlobalId = character.GetGlobalId(), Count = 1 };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 6:
+                case 9:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(10);
+                        homeMode.SimulateGatcha(unit);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 4: // Skin
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(9) { SkinGlobalId = DataTables.Get(DataType.Skin).GetData<SkinData>(data).GetGlobalId(), Count = 1 };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 10:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(11);
+                        homeMode.SimulateGatcha(unit);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 12:
+                    {
+                        CharacterData character = DataTables.Get(DataType.Character).GetDataWithId<CharacterData>(UnknownDataId);
+
+                        if (character == null)
+                        {
+                            return ProcessReward(homeMode, milestoneData, true, track, idx, bpSeason);
+                        }
+
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(6) { DataGlobalId = character.GetGlobalId(), Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 13:
+                case 18:
+                case 29:
+                case 37:
+                    break;
+                case 14:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(12);
+                        homeMode.SimulateGatcha(unit);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 16:
+                case 44:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(8) { Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 47: // Overcharge Starr Drop
+                    {
+                        int requested = Math.Max(1, count);
+                        if (RandomRewardManager.GiveStarrDrops(homeMode, requested, 6, false) != requested)
+                            return -3;
+                        refreshRandomRewards = true;
+                    }
+                    break;
+                case 49: // Starr Drop container of a fixed rarity
+                    {
+                        int rarity = useSecondaryReward
+                            ? milestoneData.SecondaryLvlUpRewardExtraData
+                            : milestoneData.PrimaryLvlUpRewardExtraData;
+                        int requested = Math.Max(1, count);
+                        if (RandomRewardManager.GiveStarrDrops(homeMode, requested, rarity, false) != requested)
+                            return -3;
+                        refreshRandomRewards = true;
+                        break;
+                    }
+                case 50: // Random Starr Drop
+                    {
+                        int requested = Math.Max(1, count);
+                        if (RandomRewardManager.GiveStarrDrops(homeMode, requested, 0, false) != requested)
+                            return -3;
+                        refreshRandomRewards = true;
+                    }
+                    break;
+                case 19: // Pins
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(11) { DataGlobalId = DataTables.Get(DataType.Emote).GetData<EmoteData>(data).GetGlobalId(), Count = 1 };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 25:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(11) { DataGlobalId = DataTables.Get(DataType.PlayerThumbnail).GetData<PlayerThumbnailData>(data).GetGlobalId(), Count = 1 };
+                        Console.WriteLine(drop.DataGlobalId);
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 38:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(22) { Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 41:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(24) { Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 43:
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(11) { DataGlobalId = DataTables.Get(DataType.Titul).GetData<TitlesData>(data).GetGlobalId(), Count = 1 };
+                        Console.WriteLine(drop.DataGlobalId);
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                case 45: // Blings
+                    {
+                        DeliveryUnit unit = new DeliveryUnit(100);
+                        GatchaDrop drop = new GatchaDrop(25) { Count = count };
+                        unit.AddDrop(drop);
+                        command.DeliveryUnits.Add(unit);
+                        break;
+                    }
+                default:
+                    {
+                        Logger.Error("Unknown reward type: " + type);
+                        return -3;
+                    }
+            }
+
+            command.RewardTrackType = track;
+            command.RewardForRank = idx;
+            command.BrawlPassSeason = bpSeason;
+            command.ClaimMode = 0;
+
+            command.Execute(homeMode);
+
+            AvailableServerCommandMessage message = new AvailableServerCommandMessage { Command = command };
+            homeMode.GameListener.SendMessage(message);
+            if (refreshRandomRewards) RandomRewardManager.Send(homeMode);
+            return 0;
+        }
+
+        public override int GetCommandType()
+        {
+            return 517;
+        }
+    }
+}

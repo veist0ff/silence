@@ -1,0 +1,281 @@
+namespace PmdrKv64.Server.Logic.Game
+{
+    using PmdrKv64.Logic.Data;
+    using PmdrKv64.Logic.Home.Items;
+    using PmdrKv64.Server.Database;
+    using PmdrKv64.Titan.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading;
+
+    public static class Events
+    {
+        public const int REFRESH_MINUTES = 6 * 60; // Из v29: Обновление раз в 6 часов
+
+        private static Timer RefreshTimer;
+        private static EventSlotConfig[] ConfigSlots;
+        
+        private static Dictionary<int, EventData> Slots;
+        public static Dictionary<int, int> SlotsLocations;
+        public static List<int> Locations;
+
+        // Трекинг сбора жетонов (как в v29)
+        private static Dictionary<int, List<long>> SlotsCollected = new();
+        private static Dictionary<int, List<long>> SlotsPlayed = new();
+
+        private static readonly object SlotsLock = new object();
+        private static readonly object SlotsCollectedLock = new object();
+        private static readonly object SlotsPlayedLock = new object();
+
+        public static void Init()
+        {
+            LoadSettings();
+            Slots = new Dictionary<int, EventData>();
+            SlotsLocations = new Dictionary<int, int>();
+            Locations = new List<int>();
+
+            GenerateEventsInf();
+
+            RefreshTimer = new Timer(new TimerCallback(RefreshTimerElapsed), null, REFRESH_MINUTES * 60 * 1000, REFRESH_MINUTES * 60 * 1000);
+        }
+
+        private static void GenerateEventsInf()
+        {
+            bool generated = false;
+            while (!generated)
+            {
+                try
+                {
+                    GenerateEvents();
+                    generated = true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка при генерации ивентов: {e}");
+                }
+            }
+        }
+
+        private static void GenerateEvents()
+        {
+            lock (SlotsLock)
+            {
+                Slots.Clear();
+                SlotsLocations.Clear();
+                Locations.Clear();
+
+                lock (SlotsCollectedLock) SlotsCollected.Clear();
+                lock (SlotsPlayedLock) SlotsPlayed.Clear();
+
+                for (int i = 0; i < ConfigSlots.Length; i++)
+                {
+                    var config = ConfigSlots[i];
+                    EventData ev = GenerateEvent(config.AllowedModes, config.Slot, config.location);
+                    
+                    if (ev != null)
+                    {
+                        Slots[config.Slot] = ev;
+                        SlotsLocations[ev.LocationId] = config.Slot;
+                        Locations.Add(ev.LocationId);
+
+                        lock (SlotsCollectedLock) SlotsCollected.Add(config.Slot, new List<long>());
+                        lock (SlotsPlayedLock) SlotsPlayed.Add(config.Slot, new List<long>());
+                    }
+                }
+            }
+        }
+
+        private static void RefreshTimerElapsed(object s)
+        {
+            GenerateEventsInf();
+
+            // Если у тебя есть система сессий в v64, добавь сюда рассылку нового дня:
+            // foreach (Session session in Sessions.ActiveSessions.Values.ToArray())
+            // {
+            //      LogicDayChangedCommand newday = new() { Home = session.Home.Home };
+            //      newday.Home.Events = GetEventsById(session.AccountId);
+            //      session.Connection.Send(new AvailableServerCommandMessage { Command = newday });
+            // }
+        }
+
+        private static EventData GenerateEvent(string[] gameModes, int slot, int presetlocation)
+        {
+            // Если есть предустановленная локация
+            if (presetlocation != 0)
+            {
+                LocationData presetLoc = DataTables.Get(DataType.Location).GetDataWithId<LocationData>(presetlocation);
+                if (presetLoc != null)
+                {
+                    return new EventData
+                    {
+                        EndTime = DateTime.Now.AddMinutes(REFRESH_MINUTES),
+                        LocationId = presetLoc.GetGlobalId(),
+                        Slot = slot
+                    };
+                }
+            }
+
+            // Ротация карт и режимов
+            int count = DataTables.Get(DataType.Location).Count;
+            Random rand = new Random();
+            int tries = 0;
+
+            while (tries < 1000)
+            {
+                LocationData location = DataTables.Get(DataType.Location).GetDataWithId<LocationData>(rand.Next(0, count));
+                // gameModes.Contains(location.GameModeVariation) обеспечит ротацию режимов из конфига
+                if (location != null && !location.Disabled && gameModes.Contains(location.GameModeVariation))
+                {
+                    return new EventData
+                    {
+                        EndTime = DateTime.Now.AddMinutes(REFRESH_MINUTES),
+                        LocationId = location.GetGlobalId(),
+                        Slot = slot
+                    };
+                }
+                tries++;
+            }
+
+            return null;
+        }
+
+        private static void LoadSettings()
+        {
+            LogicJSONObject settings = LogicJSONParser.ParseObject(File.ReadAllText("Json/gameplay.json"));
+            LogicJSONArray slots = settings.GetJSONArray("slots");
+            ConfigSlots = new EventSlotConfig[slots.Size()];
+
+            for (int i = 0; i < slots.Size(); i++)
+            {
+                EventSlotConfig config = new EventSlotConfig();
+                LogicJSONObject slot = slots.GetJSONObject(i);
+                config.Slot = slot.GetJSONNumber("slot").GetIntValue();
+
+                LogicJSONArray gameModes = slot.GetJSONArray("game_modes");
+                config.AllowedModes = new string[gameModes.Size()];
+                
+                // Проверяем наличие ключа location
+                if (slot.GetJSONNumber("location") != null)
+                    config.location = slot.GetJSONNumber("location").GetIntValue();
+
+                for (int j = 0; j < gameModes.Size(); j++)
+                {
+                    config.AllowedModes[j] = gameModes.GetJSONString(j).GetStringValue();
+                }
+
+                ConfigSlots[i] = config;
+            }
+        }
+
+        // --- ЛОГИКА СБОРА ЖЕТОНОВ (ИЗ v29) ---
+
+        public static bool CollectEvent(long id, int slot)
+        {
+            lock (SlotsCollectedLock)
+            {
+                if (!SlotsCollected.ContainsKey(slot)) return false;
+                if (SlotsCollected[slot].Contains(id)) return false;
+                
+                SlotsCollected[slot].Add(id);
+                return true;
+            }
+        }
+
+        public static bool PlaySlot(long id, int slot)
+        {
+            lock (SlotsPlayedLock)
+            {
+                if (!SlotsPlayed.ContainsKey(slot)) return false;
+                if (SlotsPlayed[slot].Contains(id)) return false;
+
+                SlotsPlayed[slot].Add(id);
+                return true;
+            }
+        }
+
+        public static bool HasEventBonus(long id, int slot)
+        {
+            lock (SlotsCollectedLock)
+            {
+                return SlotsCollected.ContainsKey(slot) && !SlotsCollected[slot].Contains(id);
+            }
+        }
+
+        public static EventData GetEvent(int i)
+        {
+            lock (SlotsLock)
+            {
+                if (HasSlot(i)) return Slots[i];
+                return null;
+            }
+        }
+
+        public static bool HasSlot(int slot)
+        {
+            lock (SlotsLock)
+            {
+                return Slots != null && Slots.ContainsKey(slot);
+            }
+        }
+
+        public static bool HasLocation(int location)
+        {
+            lock (SlotsLock)
+            {
+                return Locations.Contains(location);
+            }
+        }
+
+        public static EventData[] GetEvents()
+        {
+            lock (SlotsLock)
+            {
+                if (Slots == null || Slots.Count == 0) return new EventData[0];
+                return Slots.Values.ToArray();
+            }
+        }
+
+        // Получение ивентов специально для игрока (с проверкой токенов)
+        public static EventData[] GetEventsById(long id)
+        {
+            lock (SlotsLock)
+            lock (SlotsCollectedLock)
+            {
+                if (Slots == null || Slots.Count == 0) return new EventData[0];
+
+                var eventsArray = new EventData[Slots.Count];
+                int index = 0;
+
+                foreach (var kvp in Slots)
+                {
+                    // Делаем клон, чтобы изменения не затрагивали других игроков
+                    EventData e = kvp.Value.Clone();
+                    
+                    // Если игрок УЖЕ в списке собранных, значит бонус собран (true)
+                    if (SlotsCollected.ContainsKey(e.Slot) && SlotsCollected[e.Slot].Contains(id))
+                    {
+                        e.IsBonusCollected = true;
+                    }
+                    else
+                    {
+                        e.IsBonusCollected = false;
+                    }
+
+                    eventsArray[index] = e;
+                    index++;
+                }
+
+                return eventsArray;
+            }
+        }
+
+        private class EventSlotConfig
+        {
+            public int Slot { get; set; }
+            public string[] AllowedModes { get; set; }
+            public int location;
+        }
+    }
+}

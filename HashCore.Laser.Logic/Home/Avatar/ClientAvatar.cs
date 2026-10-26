@@ -1,0 +1,649 @@
+namespace HashCore.Laser.Logic.Avatar
+{
+    using Newtonsoft.Json;
+    using HashCore.Laser.Logic.Home;
+    using System.IO;
+    using HashCore.Laser.Logic.Data;
+    using System.Numerics;
+    using System.Security.Cryptography;
+    using System.Security.Principal;
+    using HashCore.Laser.Logic.Friends;
+
+    public enum AllianceRole
+    {
+        None = 0,
+        Member = 1,
+        Leader = 2,
+        Elder = 3,
+        CoLeader = 4
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class ClientAvatar
+    {
+        [JsonProperty] public long AccountId;
+        [JsonProperty] public string PassToken;
+        [JsonProperty] public string Name;
+        [JsonProperty] public bool NameSetByUser;
+        [JsonProperty] public int TutorialsCompletedCount = 2;
+        [JsonIgnore] public HomeMode HomeMode;
+        [JsonProperty] public int Gold;
+        [JsonProperty] public int Diamonds;
+        [JsonProperty] public List<Hero> Heroes;
+        [JsonProperty] public int TrioWins;
+        [JsonProperty] public int DuoWins;
+        [JsonProperty] public int SoloWins;
+        [JsonProperty] public int Tokens;
+        [JsonProperty] public int StarTokens;
+        [JsonProperty] public int StarPoints;
+        [JsonProperty] public int Blings;
+        [JsonProperty] public int PowerPoints;
+        [JsonProperty] public int RareTokens;
+        [JsonProperty] public bool IsDev;
+        [JsonProperty] public bool IsPremium;
+        [JsonProperty] public long AllianceId;
+        [JsonProperty] public AllianceRole AllianceRole;
+        [JsonProperty] public DateTime LastOnline;
+        [JsonProperty] public List<Friend> Friends;
+        [JsonProperty] public bool Banned;
+        [JsonIgnore] public int PlayerStatus;
+        [JsonIgnore] public long TeamId;
+        [JsonIgnore] public long BattleId;
+        [JsonIgnore] public long UdpSessionId;
+        [JsonIgnore] public int TeamIndex;
+        [JsonIgnore] public int OwnIndex;
+        /// <summary>
+        /// Сохранённый рекорд кубков. Его вёл сломанный AddTrophies — писал
+        /// `max(старое, 0 + награда)`, то есть единицы вместо сотен, — но у живых
+        /// аккаунтов в нём лежит настоящее значение, и выбрасывать его нельзя:
+        /// по рекорду гейтится трофейная дорога.
+        /// </summary>
+        [JsonProperty("HighestTrophies")] public int StoredHighestTrophies;
+
+        /// <summary>
+        /// Рекорд кубков игрока: что сохранено, но не меньше суммы рекордов по
+        /// бойцам. Сумма растёт сама вместе с боями, а сохранённое значение
+        /// оставляет в силе всё, что накопилось раньше. По этому числу
+        /// LogicClaimTrophyWorldRewardCommand решает, открыта ли веха.
+        /// </summary>
+        [JsonIgnore] public int HighestTrophies
+        {
+            get
+            {
+                int fromHeroes = 0;
+                foreach (Hero hero in Heroes.ToArray())
+                {
+                    fromHeroes += hero.HighestTrophies;
+                }
+
+                return fromHeroes > StoredHighestTrophies ? fromHeroes : StoredHighestTrophies;
+            }
+        }
+
+        /// <summary>
+        /// Подтягивает сохранённый рекорд до текущей суммы. Зовётся при входе,
+        /// чтобы число не откатывалось, если бойца потом сбросят.
+        /// </summary>
+        public void RefreshHighestTrophies()
+        {
+            int current = HighestTrophies;
+            if (current > StoredHighestTrophies) StoredHighestTrophies = current;
+        }
+        [JsonProperty] public int RollsSinceGoodDrop;
+        [JsonProperty] public int NameChangesCount;
+        [JsonProperty] public DateTime LastNameChangeTime;
+        [JsonProperty] public int Rob;
+        [JsonProperty] public int Boss;
+        [JsonProperty] public int ChallangeWins;
+        [JsonProperty] public int FameCredits;
+        [JsonProperty] public System.Collections.Generic.List<HashCore.Laser.Logic.Home.BattleLog.BattleLogEntry> BattleLog = new();
+        // В v64 скин можно выбрать, не имея бойца (фича игры). Храним по id бойца,
+        // пока бойца нет: characterGlobalId -> skin instance id.
+        [JsonProperty] public System.Collections.Generic.Dictionary<int, int> SelectedSkinsWithoutHero = new();
+        [JsonProperty] public int LeageSoloWins;
+        [JsonProperty] public int LeageTeamWins;
+        [JsonProperty] public int ClubLigWins;
+        [JsonProperty] public int RankedPoins;
+        [JsonProperty] public int HighestRankedPoints;
+        [JsonProperty] public int old35rank;
+        /// <summary>
+        /// Когда аккаунт завели. Раньше этого поля не было вовсе, а <see cref="Year"/>
+        /// никто не заполнял — в профиле год создания показывался нулём.
+        /// </summary>
+        [JsonProperty] public DateTime CreatedAt;
+
+        /// <summary>
+        /// Год создания аккаунта, статистика 27 в профиле. Считается из
+        /// <see cref="CreatedAt"/>, отдельно не хранится.
+        /// </summary>
+        [JsonIgnore] public int Year => CreatedAt.Year > 1 ? CreatedAt.Year : DateTime.UtcNow.Year;
+        [JsonProperty] public int NumbLeader;
+        [JsonProperty] public int HighestNewTrophies;
+        [JsonProperty] public int RecordsRank;
+        [JsonProperty] public int Records;
+        [JsonProperty] public int Prestige;
+        [JsonProperty] public int Experience;
+
+        public int GetNameChangeCost()
+        {
+            if (NameChangesCount == 0) return 0;
+            if (NameChangesCount == 1) return 60;
+            if (NameChangesCount == 2) return 90;
+            return 120;
+        }
+
+        public int GetNameChangeTimer()
+        {
+            if (LastNameChangeTime == DateTime.MinValue) return 0;
+            
+            DateTime now = DateTime.UtcNow;
+            TimeSpan timeSinceLastChange = now - LastNameChangeTime;
+            TimeSpan cooldown = TimeSpan.FromHours(24);
+            
+            if (timeSinceLastChange >= cooldown)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)(cooldown - timeSinceLastChange).TotalSeconds;
+            }
+        }
+
+        public int Trophies
+        {
+            get
+            {
+                int result = 0;
+                foreach (Hero hero in Heroes.ToArray())
+                {
+                    result += hero.Trophies;
+                }
+                return result;
+            }
+        }
+
+        public int GetUnlockedBrawlersCountWithRarity(string rarity)
+        {
+            return Heroes.Count(x => x.CardData.Rarity == rarity);
+        }
+
+        public void ResetTrophies()
+        {
+            foreach (Hero hero in Heroes.ToArray())
+            {
+                hero.Trophies = 0;
+                hero.HighestTrophies = 0;
+            }
+        }
+
+        public int GetUnlockedHeroesCount()
+        {
+            return Heroes.Count;
+        }
+
+        public void UnlockHero(int characterId)
+        {
+            Hero heroEntry = new Hero(characterId);
+            Heroes.Add(heroEntry);
+        }
+
+        public void UpgradeHero(int characterId)
+        {
+            Hero heroEntry = GetHero(characterId);
+            if (heroEntry.SelectedOverChargeId == 0)
+            {
+                CardData o = heroEntry.GetDefaultMetaForHero(6);
+                if (o != null) heroEntry.SelectedOverChargeId = o.GetInstanceId();
+            }
+        }
+
+        public void RemoveHero(int characterId)
+        {
+            Heroes.RemoveAll(x => x.CharacterId == characterId);
+        }
+
+        public bool UseRareTokens(int count)
+        {
+            if (count > RareTokens) return false;
+            RareTokens -= count;
+            return true;
+        }
+
+        public bool HasHero(int characterId)
+        {
+            return Heroes.Find(x => x.CharacterId == characterId) != null;
+        }
+
+        public void SetEmoteForBrawler(int characterId, int slot, int pin)
+        {
+            Hero heroEntry = GetHero(characterId);
+            heroEntry.emote[slot] = pin;
+        }
+
+        public Hero GetHero(int characterId)
+        {
+            return Heroes.Find(x => x.CharacterId == characterId);
+        }
+
+        public Hero GetHeroForCard(CardData cardData)
+        {
+            return GetHero(DataTables.Get(16).GetData<CharacterData>(cardData.Target).GetInstanceId() + 16000000);
+        }
+
+        public bool UseDiamonds(int count)
+        {
+            if (count > Diamonds) return false;
+            Diamonds -= count;
+            return true;
+        }
+
+        public bool UseBlings(int count)
+        {
+            if (count > Blings) return false;
+            Blings -= count;
+            return true;
+        }
+
+        public bool UseGold(int count)
+        {
+            if (count > Gold) return false;
+            Gold -= count;
+            return true;
+        }
+
+        public void AddDiamonds(int count)
+        {
+            Diamonds += count;
+        }
+
+        public void AddGold(int count)
+        {
+            Gold += count;
+        }
+
+        public bool UseTokens(int count)
+        {
+            if (count > Tokens) return false;
+            Tokens -= count;
+            return true;
+        }
+
+        public void AddTokens(int count)
+        {
+            HomeMode.Home.BrawlPassTokens += count;
+        }
+
+        public bool UseStarTokens(int count)
+        {
+            if (count > StarTokens) return false;
+            StarTokens -= count;
+            return true;
+        }
+
+        public void AddStarTokens(int count)
+        {
+            StarTokens += count;
+        }
+
+        public void AddPowerPoints(int count)
+        {
+            PowerPoints += count;
+        }
+
+        public void AddRareTokens(int count)
+        {
+            RareTokens += count;
+        }
+
+        public void AddBlings(int count)
+        {
+            Blings += count;
+        }
+
+        public ClientAvatar()
+        {
+            Name = "Brawler";
+            Gold = 99999;
+            Diamonds = 99999;
+            Heroes = new List<Hero>();
+            IsDev = false;
+            IsPremium = false;
+            AllianceRole = AllianceRole.None;
+            AllianceId = -1;
+            LastOnline = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
+            Friends = new List<Friend>();
+        }
+
+        public void SkipTutorial()
+        {
+            TutorialsCompletedCount = 2;
+        }
+
+        public bool IsTutorialState()
+        {
+            return TutorialsCompletedCount < 2;
+        }
+
+        public Friend GetRequestFriendById(long id)
+        {
+            return Friends.Find(friend => friend.AccountId == id && friend.FriendState != 4);
+        }
+
+        public Friend GetAcceptedFriendById(long id)
+        {
+            return Friends.Find(friend => friend.AccountId == id && friend.FriendState == 4);
+        }
+
+        public EmoteData GetDefaultEmoteForCharacter(string Character, string Type)
+        {
+            foreach (EmoteData emoteData in DataTables.Get(DataType.Emote).GetDatas())
+            {
+                if (emoteData.Character == Character && emoteData.EmoteType == Type) return emoteData;
+            }
+            return null;
+        }
+
+        public Friend GetFriendById(long id)
+        {
+            return Friends.Find(friend => friend.AccountId == id);
+        }
+
+        public void Refresh()
+        {          
+        }
+        
+        public int Checksum
+        {
+            get
+            {
+                ChecksumEncoder encoder = new ChecksumEncoder();
+                Encode(encoder);
+                return encoder.GetCheckSum();
+            }
+        }
+        
+        public void Encode(ChecksumEncoder stream)
+        {
+            int id = (int)AccountId;
+            stream.WriteVLong(AccountId);
+            stream.WriteVLong(AccountId);
+            stream.WriteVLong(AccountId);
+
+            stream.WriteString(Name);
+            stream.WriteBoolean(NameSetByUser);
+
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+
+            stream.WriteVInt(30);
+
+            // Колоды рогалика. RogueliteUtil::isBrawlerAndCardDeckOwned требует, чтобы
+            // у игрока в предметах лежала карта бойца с MetaType 12 (cards.csv, тип
+            // roguelite) — клиент ищет её через getRogueliteCardDataByHero, где условие
+            // ровно getMetaType() == 12. Без неё кнопка входа в рогалик неактивна.
+            //
+            // Проверка эта поштучная, на каждого бойца, то есть колоды задуманы как
+            // коллекция: их собирают из карточных наборов события (в collabs.csv у
+            // Stranger колонка Metatype = 12). Раньше здесь выдавались все колоды
+            // сразу, поэтому на витрине клиент писал «есть». Теперь выдаются только
+            // собранные плюс небольшой стартовый набор, чтобы рогалик не оказался
+            // полностью закрыт на новом аккаунте.
+            const int starterDeckCount = 3;
+
+            // У сохранений, созданных до появления поля, список приходит null —
+            // без этого ни одна колода не попала бы в предметы и рогалик закрылся бы.
+            if (HomeMode?.Home != null && HomeMode.Home.UnlockedRogueliteDecks == null)
+                HomeMode.Home.UnlockedRogueliteDecks = new List<int>();
+
+            List<int> collectedDecks = HomeMode?.Home?.UnlockedRogueliteDecks;
+            List<int> rogueliteDeckCards = new List<int>();
+
+            foreach (Hero hero in Heroes)
+            {
+                CardData deckCard = hero.GetDefaultMetaForHero(12);
+                if (deckCard == null) continue;
+
+                int deckId = deckCard.GetInstanceId() + 23000000;
+                bool owned = collectedDecks != null && collectedDecks.Contains(deckId);
+
+                if (!owned && collectedDecks != null && collectedDecks.Count < starterDeckCount)
+                {
+                    collectedDecks.Add(deckId);
+                    owned = true;
+                }
+
+                if (owned && !rogueliteDeckCards.Contains(deckId)) rogueliteDeckCards.Add(deckId);
+            }
+
+            // Колоды бойцов, которых у игрока пока нет, тоже должны лежать в предметах,
+            // иначе купленная колода пропадала бы из инвентаря до покупки бойца.
+            if (collectedDecks != null)
+            {
+                foreach (int deckId in collectedDecks)
+                {
+                    if (!rogueliteDeckCards.Contains(deckId)) rogueliteDeckCards.Add(deckId);
+                }
+            }
+
+            // Купленные карточки и гиры лежат в том же списке предметов, что и
+            // карты бойцов. Без них клиент считает гаджет, пассивку, гипер и гир
+            // некупленными, сколько бы раз их ни покупали.
+            List<int> ownedCards = new List<int>();
+            HashSet<int> selectedCards = new HashSet<int>();
+            List<int> ownedGears = new List<int>();
+
+            foreach (Hero hero in Heroes)
+            {
+                if (hero == null) continue;
+
+                if (hero.UnlockedCards != null)
+                {
+                    foreach (int cardInstanceId in hero.UnlockedCards)
+                    {
+                        int cardId = 23000000 + cardInstanceId;
+                        if (!ownedCards.Contains(cardId)) ownedCards.Add(cardId);
+                        // LogicClientAvatar::hasItem: значение 1 или 2 = куплено,
+                        // isItemSelected: 2 = выбрано. С одной единицей после перезахода
+                        // клиент считал все карточки невыбранными.
+                        if (cardInstanceId == hero.SelectedGadgetId || cardInstanceId == hero.SelectedStarPowerId
+                            || cardInstanceId == hero.SelectedOverChargeId)
+                            selectedCards.Add(cardId);
+                    }
+                }
+
+                if (hero.UnlockedGears != null)
+                {
+                    foreach (int gearId in hero.UnlockedGears)
+                    {
+                        if (gearId > 0 && !ownedGears.Contains(gearId)) ownedGears.Add(gearId);
+                    }
+                }
+            }
+
+            stream.WriteVInt(6 + Heroes.Count + ownedGears.Count);
+            {
+                ByteStreamHelper.WriteDataReference(stream, 5000008);
+                stream.WriteVInt(0);
+                stream.WriteVInt(Gold);
+
+                ByteStreamHelper.WriteDataReference(stream, 5000018);
+                stream.WriteVInt(0);
+                stream.WriteVInt(5);
+
+                // Слава (resources.csv, Fame). Без неё клиент считал свою, и награды
+                // за славу расходились с сервером.
+                ByteStreamHelper.WriteDataReference(stream, 5000021);
+                stream.WriteVInt(0);
+                stream.WriteVInt(FameCredits);
+
+                ByteStreamHelper.WriteDataReference(stream, 5000022);
+                stream.WriteVInt(0);
+                stream.WriteVInt(PowerPoints);
+
+                ByteStreamHelper.WriteDataReference(stream, 5000023);
+                stream.WriteVInt(0);
+                stream.WriteVInt(Blings);
+
+                // resources.csv row 25 is DailyStreak, the counter LogicClientAvatar::getDailyStreak reads.
+                ByteStreamHelper.WriteDataReference(stream, 5000025);
+                stream.WriteVInt(0);
+                stream.WriteVInt(HomeMode?.Home != null ? HomeMode.Home.LoginCalendarStreak : 0);
+
+                foreach (Hero hero in Heroes)
+                {
+                    CardData unlockCard = hero.GetDefaultMetaForHero(0);
+                    int unlockCardId = unlockCard != null ? unlockCard.GetInstanceId() + 23000000 : 23000000 + (hero.CharacterId - 16000000); 
+                    ByteStreamHelper.WriteDataReference(stream, unlockCardId);
+                    stream.WriteVInt(-1);
+                    stream.WriteVInt(1);
+                }
+
+                foreach (int gearId in ownedGears)
+                {
+                    ByteStreamHelper.WriteDataReference(stream, gearId);
+                    stream.WriteVInt(-1);
+                    stream.WriteVInt(1);
+                }
+            }
+
+            stream.WriteVInt(Heroes.Count);
+            foreach (Hero hero in Heroes)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero.CharacterId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(hero.Trophies);
+            }
+
+            stream.WriteVInt(Heroes.Count);
+            foreach (Hero hero in Heroes)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero.CharacterId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(hero.HighestTrophies);
+            }
+
+            stream.WriteVInt(Heroes.Count);
+            foreach (Hero hero in Heroes)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero.CharacterId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(1);
+            }
+
+            stream.WriteVInt(Heroes.Count);
+            foreach (Hero hero in Heroes)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero.CharacterId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(hero.PowerPoints);
+            }
+
+            stream.WriteVInt(Heroes.Count);
+            foreach (Hero hero in Heroes)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero.CharacterId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(hero.PowerLevel - 1);
+            }
+
+            // Commodity 6 — купленные гаджеты, пассивки и гиперы: сюда их кладёт
+            // LogicClientAvatar::setItem, отсюда читают hasItem (1 или 2) и
+            // isItemSelected (2). Пустой список при входе стирал все покупки.
+            stream.WriteVInt(ownedCards.Count);
+            foreach (int cardId in ownedCards)
+            {
+                ByteStreamHelper.WriteDataReference(stream, cardId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(selectedCards.Contains(cardId) ? 2 : 1);
+            }
+
+            // Commodity 7 — битовые флаги по бойцу. Бит 0x20 ставит
+            // LogicClientAvatar::setHeroInFavouriteList, из него клиент и берёт любимого
+            // бойца: в LogicClientHome отдельного поля под него нет.
+            List<int> favourites = new List<int>();
+
+            if (HomeMode?.Home != null)
+            {
+                int favourite = HomeMode.Home.FavouriteCharacter;
+                if (favourite != 0 && HasHero(favourite)) favourites.Add(favourite);
+
+                if (HomeMode.Home.FavouriteHeroes != null)
+                {
+                    foreach (int hero in HomeMode.Home.FavouriteHeroes)
+                    {
+                        if (hero != 0 && HasHero(hero) && !favourites.Contains(hero)) favourites.Add(hero);
+                    }
+                }
+            }
+
+            stream.WriteVInt(favourites.Count);
+            foreach (int hero in favourites)
+            {
+                ByteStreamHelper.WriteDataReference(stream, hero);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(0x20);
+            }
+
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            // Commodity 28 — колоды рогалика (MetaType 12): сюда их кладёт
+            // LogicClientAvatar::setItem. В списке 0 клиент их не видел, и в
+            // альбоме события всегда было 0. Дубликатов нет: повтор заменяется монетами.
+            stream.WriteVInt(rogueliteDeckCards.Count);
+            foreach (int deckCardId in rogueliteDeckCards)
+            {
+                ByteStreamHelper.WriteDataReference(stream, deckCardId);
+                stream.WriteVInt(-1);
+                stream.WriteVInt(1);
+            }
+            stream.WriteVInt(0);
+
+            stream.WriteVInt(Diamonds);
+            stream.WriteVInt(Diamonds);
+            stream.WriteVInt(10);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(TutorialsCompletedCount); // состояние обучения: <2 — клиент запускает обучение
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+            stream.WriteVInt(0);
+        }
+    }
+}

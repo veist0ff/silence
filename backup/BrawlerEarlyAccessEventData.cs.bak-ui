@@ -1,0 +1,64 @@
+namespace HashCore.Laser.Logic.Home.Items
+{
+    using System.Collections.Generic;
+
+    // LogicBrawlerEarlyAccessEvent::decode 0x1003b5624, EventData +248.
+    public sealed class BrawlerEarlyAccessEventData
+    {
+        public static BrawlerEarlyAccessEventData BuildGigi()
+        {
+            var hero = Data.DataTables.Get(Data.DataType.Character).GetData<Data.CharacterData>("Daredevil");
+            var box = RandomReward.RandomRewardManager.GetContainer("DaredevilBrawlerBox");
+            if (hero == null || hero.GetGlobalId() != 16000100 || box == null || box.MultiDropCount != 8)
+                throw new System.InvalidOperationException("Invalid Daredevil early access hero or box CSV configuration.");
+            return new BrawlerEarlyAccessEventData
+            {
+                Unk16 = 3, Unk20 = 86400, Unk28 = 3, Unk32 = 2,
+                Unk56 = hero.GetGlobalId(),
+                // Positive UI denominator only; an empty reward list grants no milestone/hero.
+                Unk36 = 1
+            };
+        }
+
+        public int Unk20, Unk52, Unk28, Unk48, Unk40;
+        // Confirmed UI consumers: +20 ticket interval seconds, +28 ticket cap,
+        // +16 batch size, +32 wins per box, +36 collected-box reward threshold.
+        // +8 remains an untyped data reference, NOT a confirmed box reference.
+        public List<LogicGemOffer?>? Unk72 = new();
+        public int Unk8; // Data reference.
+        public int Unk24, Unk36, Unk32, Unk44, Unk16;
+        public int Unk56; // Data reference.
+        public ChronosTextEntryData? Unk64;
+        public void Encode(ByteStream w)
+        {
+            w.WriteVInt(Unk20);
+            w.WriteVInt(Unk52);
+            w.WriteVInt(Unk28);
+            w.WriteVInt(Unk48);
+            w.WriteVInt(Unk40);
+            if (w.WriteBoolean(Unk72 != null))
+                PlayerCollabEventData.WriteArray(w, Unk72, 32, item =>
+                {
+                    if (w.WriteBoolean(item != null)) item!.Encode(w);
+                });
+            ByteStreamHelper.WriteDataReference(w, Unk8);
+            w.WriteVInt(Unk24);
+            w.WriteVInt(Unk36);
+            w.WriteVInt(Unk32);
+            w.WriteVInt(Unk44);
+            w.WriteVInt(Unk16);
+            ByteStreamHelper.WriteDataReference(w, Unk56);
+            if (w.WriteBoolean(Unk64 != null)) Unk64!.Encode(w);
+        }
+    }
+    public sealed class ChronosTextEntryData
+    {
+        public int Unk0;
+        public string Text = "";
+        public void Encode(ByteStream w)
+        {
+            w.WriteString(Text);
+            w.WriteVInt(Unk0);
+        }
+    }
+}

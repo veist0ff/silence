@@ -1,0 +1,11 @@
+/root/v64/HashCore.Laser.Titan/bin/Debug/net10.0/HashCore.Laser.Titan.deps.json
+/root/v64/HashCore.Laser.Titan/bin/Debug/net10.0/HashCore.Laser.Titan.dll
+/root/v64/HashCore.Laser.Titan/bin/Debug/net10.0/HashCore.Laser.Titan.pdb
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.GeneratedMSBuildEditorConfig.editorconfig
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.AssemblyInfoInputs.cache
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.AssemblyInfo.cs
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.csproj.CoreCompileInputs.cache
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.dll
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/refint/HashCore.Laser.Titan.dll
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/HashCore.Laser.Titan.pdb
+/root/v64/HashCore.Laser.Titan/obj/Debug/net10.0/ref/HashCore.Laser.Titan.dll

@@ -1,0 +1,844 @@
+[07:56:05] import_and_match started
+[07:56:05] Loaded 78727 source functions
+[07:56:05] Building string index...
+[07:56:06] String index ready: 38812 strings, 46273 references, 12033 functions, 24015 rare keys (1.0s)
+[07:56:07] Collecting features for 76383 functions...
+[07:56:09] Features: 2000/76383, 827.2 functions/s, ETA 1.5 min
+[07:56:11] Features: 4000/76383, 958.3 functions/s, ETA 1.3 min
+[07:56:13] Features: 6000/76383, 957.7 functions/s, ETA 1.2 min
+[07:56:15] Features: 8000/76383, 1006.2 functions/s, ETA 1.1 min
+[07:56:16] Features: 10000/76383, 1020.1 functions/s, ETA 1.1 min
+[07:56:19] Features: 12000/76383, 961.4 functions/s, ETA 1.1 min
+[07:56:21] Features: 14000/76383, 971.6 functions/s, ETA 1.1 min
+[07:56:23] Features: 16000/76383, 973.8 functions/s, ETA 1.0 min
+[07:56:24] Features: 18000/76383, 1009.1 functions/s, ETA 1.0 min
+[07:56:26] Features: 20000/76383, 1024.8 functions/s, ETA 0.9 min
+[07:56:28] Features: 22000/76383, 1023.0 functions/s, ETA 0.9 min
+[07:56:29] Features: 24000/76383, 1074.8 functions/s, ETA 0.8 min
+[07:56:30] Features: 26000/76383, 1097.0 functions/s, ETA 0.8 min
+[07:56:32] Features: 28000/76383, 1081.0 functions/s, ETA 0.7 min
+[07:56:38] Features: 30000/76383, 947.6 functions/s, ETA 0.8 min
+[07:56:40] Features: 32000/76383, 967.4 functions/s, ETA 0.8 min
+[07:56:42] Features: 34000/76383, 969.7 functions/s, ETA 0.7 min
+[07:56:44] Features: 36000/76383, 972.7 functions/s, ETA 0.7 min
+[07:56:45] Features: 38000/76383, 985.4 functions/s, ETA 0.6 min
+[07:56:47] Features: 40000/76383, 999.8 functions/s, ETA 0.6 min
+[07:56:48] Features: 42000/76383, 1011.8 functions/s, ETA 0.6 min
+[07:56:49] Features: 44000/76383, 1031.9 functions/s, ETA 0.5 min
+[07:56:51] Features: 46000/76383, 1029.6 functions/s, ETA 0.5 min
+[07:56:53] Features: 48000/76383, 1028.6 functions/s, ETA 0.5 min
+[07:56:55] Features: 50000/76383, 1029.7 functions/s, ETA 0.4 min
+[07:56:58] Features: 52000/76383, 1001.8 functions/s, ETA 0.4 min
+[07:57:01] Features: 54000/76383, 1000.0 functions/s, ETA 0.4 min
+[07:57:02] Features: 56000/76383, 1018.3 functions/s, ETA 0.3 min
+[07:57:02] Features: 58000/76383, 1050.7 functions/s, ETA 0.3 min
+[07:57:02] Features: 60000/76383, 1084.4 functions/s, ETA 0.3 min
+[07:57:02] Features: 62000/76383, 1118.6 functions/s, ETA 0.2 min
+[07:57:02] Features: 64000/76383, 1152.6 functions/s, ETA 0.2 min
+[07:57:02] Features: 66000/76383, 1186.4 functions/s, ETA 0.1 min
+[07:57:02] Features: 68000/76383, 1220.2 functions/s, ETA 0.1 min
+[07:57:02] Features: 70000/76383, 1253.9 functions/s, ETA 0.1 min
+[07:57:03] Features: 72000/76383, 1287.4 functions/s, ETA 0.1 min
+[07:57:03] Features: 74000/76383, 1320.9 functions/s, ETA 0.0 min
+[07:57:03] Features: 76000/76383, 1350.2 functions/s, ETA 0.0 min
+[07:57:03] Feature collection complete: 76383 functions (56.3s)
+[07:57:03] Found 76383 target functions
+[08:06:45] Round 1, exact hash: 18136 matches
+[08:06:45] Checkpoint saved: exact_hash (18136 matches)
+[08:06:47] Round 2, string match: 2446 matches
+[08:06:48] Checkpoint saved: string_match (20582 matches)
+[08:06:52] Fuzzy scoring: 250/58145, 59.5 sources/s, 19589 pairs, ETA 16.2 min
+[08:06:55] Fuzzy scoring: 500/58145, 68.1 sources/s, 42109 pairs, ETA 14.1 min
+[08:06:59] Fuzzy scoring: 750/58145, 67.8 sources/s, 63146 pairs, ETA 14.1 min
+[08:07:02] Fuzzy scoring: 1000/58145, 68.0 sources/s, 78666 pairs, ETA 14.0 min
+[08:07:06] Fuzzy scoring: 1250/58145, 68.0 sources/s, 100153 pairs, ETA 13.9 min
+[08:07:10] Fuzzy scoring: 1500/58145, 67.9 sources/s, 122223 pairs, ETA 13.9 min
+[08:07:14] Fuzzy scoring: 1750/58145, 67.1 sources/s, 143616 pairs, ETA 14.0 min
+[08:07:17] Fuzzy scoring: 2000/58145, 67.0 sources/s, 164935 pairs, ETA 14.0 min
+[08:07:20] Fuzzy scoring: 2250/58145, 69.6 sources/s, 184294 pairs, ETA 13.4 min
+[08:07:24] Fuzzy scoring: 2500/58145, 68.9 sources/s, 202565 pairs, ETA 13.5 min
+[08:07:27] Fuzzy scoring: 2750/58145, 69.8 sources/s, 225694 pairs, ETA 13.2 min
+[08:07:30] Fuzzy scoring: 3000/58145, 71.4 sources/s, 246824 pairs, ETA 12.9 min
+[08:07:33] Fuzzy scoring: 3250/58145, 71.3 sources/s, 270521 pairs, ETA 12.8 min
+[08:07:36] Fuzzy scoring: 3500/58145, 72.2 sources/s, 297285 pairs, ETA 12.6 min
+[08:07:39] Fuzzy scoring: 3750/58145, 73.2 sources/s, 320827 pairs, ETA 12.4 min
+[08:07:42] Fuzzy scoring: 4000/58145, 74.2 sources/s, 343984 pairs, ETA 12.2 min
+[08:07:44] Fuzzy scoring: 4250/58145, 74.8 sources/s, 369368 pairs, ETA 12.0 min
+[08:07:48] Fuzzy scoring: 4500/58145, 74.8 sources/s, 393774 pairs, ETA 11.9 min
+[08:07:51] Fuzzy scoring: 4750/58145, 74.7 sources/s, 415156 pairs, ETA 11.9 min
+[08:07:54] Fuzzy scoring: 5000/58145, 75.1 sources/s, 434934 pairs, ETA 11.8 min
+[08:07:56] Fuzzy scoring: 5250/58145, 76.2 sources/s, 455189 pairs, ETA 11.6 min
+[08:07:59] Fuzzy scoring: 5500/58145, 76.5 sources/s, 480534 pairs, ETA 11.5 min
+[08:08:03] Fuzzy scoring: 5750/58145, 76.4 sources/s, 504159 pairs, ETA 11.4 min
+[08:08:06] Fuzzy scoring: 6000/58145, 76.3 sources/s, 528625 pairs, ETA 11.4 min
+[08:08:11] Fuzzy scoring: 6250/58145, 75.3 sources/s, 548975 pairs, ETA 11.5 min
+[08:08:14] Fuzzy scoring: 6500/58145, 75.0 sources/s, 565737 pairs, ETA 11.5 min
+[08:08:19] Fuzzy scoring: 6750/58145, 73.9 sources/s, 584297 pairs, ETA 11.6 min
+[08:08:26] Fuzzy scoring: 7000/58145, 71.0 sources/s, 607203 pairs, ETA 12.0 min
+[08:08:29] Fuzzy scoring: 7250/58145, 71.4 sources/s, 632163 pairs, ETA 11.9 min
+[08:08:33] Fuzzy scoring: 7500/58145, 71.3 sources/s, 655835 pairs, ETA 11.8 min
+[08:08:36] Fuzzy scoring: 7750/58145, 71.6 sources/s, 679264 pairs, ETA 11.7 min
+[08:08:39] Fuzzy scoring: 8000/58145, 71.6 sources/s, 703519 pairs, ETA 11.7 min
+[08:08:42] Fuzzy scoring: 8250/58145, 72.1 sources/s, 721707 pairs, ETA 11.5 min
+[08:08:46] Fuzzy scoring: 8500/58145, 72.1 sources/s, 743603 pairs, ETA 11.5 min
+[08:08:48] Fuzzy scoring: 8750/58145, 72.6 sources/s, 762180 pairs, ETA 11.3 min
+[08:08:52] Fuzzy scoring: 9000/58145, 72.4 sources/s, 787647 pairs, ETA 11.3 min
+[08:08:56] Fuzzy scoring: 9250/58145, 72.3 sources/s, 813285 pairs, ETA 11.3 min
+[08:08:59] Fuzzy scoring: 9500/58145, 72.5 sources/s, 836717 pairs, ETA 11.2 min
+[08:09:04] Fuzzy scoring: 9750/58145, 71.5 sources/s, 859878 pairs, ETA 11.3 min
+[08:09:07] Fuzzy scoring: 10000/58145, 71.6 sources/s, 874471 pairs, ETA 11.2 min
+[08:09:16] Fuzzy scoring: 10250/58145, 69.0 sources/s, 894099 pairs, ETA 11.6 min
+[08:09:19] Fuzzy scoring: 10500/58145, 69.6 sources/s, 909935 pairs, ETA 11.4 min
+[08:09:21] Fuzzy scoring: 10750/58145, 70.3 sources/s, 924570 pairs, ETA 11.2 min
+[08:09:23] Fuzzy scoring: 11000/58145, 71.0 sources/s, 940218 pairs, ETA 11.1 min
+[08:09:25] Fuzzy scoring: 11250/58145, 71.3 sources/s, 965339 pairs, ETA 11.0 min
+[08:09:28] Fuzzy scoring: 11500/58145, 71.5 sources/s, 990446 pairs, ETA 10.9 min
+[08:09:31] Fuzzy scoring: 11750/58145, 72.1 sources/s, 1009411 pairs, ETA 10.7 min
+[08:09:34] Fuzzy scoring: 12000/58145, 72.3 sources/s, 1033782 pairs, ETA 10.6 min
+[08:09:35] Fuzzy scoring: 12250/58145, 73.0 sources/s, 1058717 pairs, ETA 10.5 min
+[08:09:38] Fuzzy scoring: 12500/58145, 73.4 sources/s, 1084677 pairs, ETA 10.4 min
+[08:09:40] Fuzzy scoring: 12750/58145, 74.0 sources/s, 1111199 pairs, ETA 10.2 min
+[08:09:44] Fuzzy scoring: 13000/58145, 73.7 sources/s, 1138437 pairs, ETA 10.2 min
+[08:09:48] Fuzzy scoring: 13250/58145, 73.4 sources/s, 1163790 pairs, ETA 10.2 min
+[08:09:53] Fuzzy scoring: 13500/58145, 73.0 sources/s, 1182062 pairs, ETA 10.2 min
+[08:09:54] Fuzzy scoring: 13750/58145, 73.6 sources/s, 1200564 pairs, ETA 10.1 min
+[08:09:56] Fuzzy scoring: 14000/58145, 74.1 sources/s, 1220115 pairs, ETA 9.9 min
+[08:09:59] Fuzzy scoring: 14250/58145, 74.5 sources/s, 1238096 pairs, ETA 9.8 min
+[08:10:01] Fuzzy scoring: 14500/58145, 75.0 sources/s, 1256801 pairs, ETA 9.7 min
+[08:10:03] Fuzzy scoring: 14750/58145, 75.4 sources/s, 1276827 pairs, ETA 9.6 min
+[08:10:06] Fuzzy scoring: 15000/58145, 75.6 sources/s, 1298910 pairs, ETA 9.5 min
+[08:10:09] Fuzzy scoring: 15250/58145, 75.7 sources/s, 1314391 pairs, ETA 9.4 min
+[08:10:12] Fuzzy scoring: 15500/58145, 76.0 sources/s, 1333273 pairs, ETA 9.4 min
+[08:10:14] Fuzzy scoring: 15750/58145, 76.3 sources/s, 1351930 pairs, ETA 9.3 min
+[08:10:16] Fuzzy scoring: 16000/58145, 76.6 sources/s, 1367523 pairs, ETA 9.2 min
+[08:10:18] Fuzzy scoring: 16250/58145, 77.1 sources/s, 1382465 pairs, ETA 9.1 min
+[08:10:23] Fuzzy scoring: 16500/58145, 76.7 sources/s, 1404951 pairs, ETA 9.1 min
+[08:10:30] Fuzzy scoring: 16750/58145, 75.4 sources/s, 1423629 pairs, ETA 9.2 min
+[08:10:33] Fuzzy scoring: 17000/58145, 75.5 sources/s, 1440148 pairs, ETA 9.1 min
+[08:10:36] Fuzzy scoring: 17250/58145, 75.7 sources/s, 1462265 pairs, ETA 9.0 min
+[08:10:37] Fuzzy scoring: 17500/58145, 76.1 sources/s, 1481259 pairs, ETA 8.9 min
+[08:10:41] Fuzzy scoring: 17750/58145, 76.1 sources/s, 1506031 pairs, ETA 8.8 min
+[08:10:44] Fuzzy scoring: 18000/58145, 76.3 sources/s, 1524764 pairs, ETA 8.8 min
+[08:10:48] Fuzzy scoring: 18250/58145, 75.9 sources/s, 1556764 pairs, ETA 8.8 min
+[08:10:52] Fuzzy scoring: 18500/58145, 75.8 sources/s, 1583248 pairs, ETA 8.7 min
+[08:10:53] Fuzzy scoring: 18750/58145, 76.3 sources/s, 1611903 pairs, ETA 8.6 min
+[08:10:55] Fuzzy scoring: 19000/58145, 76.7 sources/s, 1635308 pairs, ETA 8.5 min
+[08:10:59] Fuzzy scoring: 19250/58145, 76.5 sources/s, 1653283 pairs, ETA 8.5 min
+[08:11:03] Fuzzy scoring: 19500/58145, 76.2 sources/s, 1669442 pairs, ETA 8.4 min
+[08:11:08] Fuzzy scoring: 19750/58145, 75.9 sources/s, 1687343 pairs, ETA 8.4 min
+[08:11:10] Fuzzy scoring: 20000/58145, 76.3 sources/s, 1699333 pairs, ETA 8.3 min
+[08:11:11] Fuzzy scoring: 20250/58145, 76.8 sources/s, 1706678 pairs, ETA 8.2 min
+[08:11:14] Fuzzy scoring: 20500/58145, 77.0 sources/s, 1718115 pairs, ETA 8.2 min
+[08:11:15] Fuzzy scoring: 20750/58145, 77.6 sources/s, 1723179 pairs, ETA 8.0 min
+[08:11:16] Fuzzy scoring: 21000/58145, 78.2 sources/s, 1728354 pairs, ETA 7.9 min
+[08:11:19] Fuzzy scoring: 21250/58145, 78.3 sources/s, 1738848 pairs, ETA 7.9 min
+[08:11:24] Fuzzy scoring: 21500/58145, 77.9 sources/s, 1759647 pairs, ETA 7.8 min
+[08:11:29] Fuzzy scoring: 21750/58145, 77.4 sources/s, 1780175 pairs, ETA 7.8 min
+[08:11:33] Fuzzy scoring: 22000/58145, 77.1 sources/s, 1798702 pairs, ETA 7.8 min
+[08:11:36] Fuzzy scoring: 22250/58145, 77.2 sources/s, 1813284 pairs, ETA 7.8 min
+[08:11:39] Fuzzy scoring: 22500/58145, 77.3 sources/s, 1829621 pairs, ETA 7.7 min
+[08:11:41] Fuzzy scoring: 22750/58145, 77.4 sources/s, 1851414 pairs, ETA 7.6 min
+[08:11:45] Fuzzy scoring: 23000/58145, 77.3 sources/s, 1870859 pairs, ETA 7.6 min
+[08:11:48] Fuzzy scoring: 23250/58145, 77.4 sources/s, 1893821 pairs, ETA 7.5 min
+[08:11:51] Fuzzy scoring: 23500/58145, 77.4 sources/s, 1917668 pairs, ETA 7.5 min
+[08:11:56] Fuzzy scoring: 23750/58145, 77.1 sources/s, 1930532 pairs, ETA 7.4 min
+[08:12:13] Fuzzy scoring: 24000/58145, 73.8 sources/s, 1955127 pairs, ETA 7.7 min
+[08:12:31] Fuzzy scoring: 24250/58145, 70.6 sources/s, 1980146 pairs, ETA 8.0 min
+[08:12:34] Fuzzy scoring: 24500/58145, 70.7 sources/s, 1998904 pairs, ETA 7.9 min
+[08:12:46] Fuzzy scoring: 24750/58145, 69.0 sources/s, 2023049 pairs, ETA 8.1 min
+[08:12:49] Fuzzy scoring: 25000/58145, 69.1 sources/s, 2042993 pairs, ETA 8.0 min
+[08:12:52] Fuzzy scoring: 25250/58145, 69.4 sources/s, 2067229 pairs, ETA 7.9 min
+[08:12:54] Fuzzy scoring: 25500/58145, 69.6 sources/s, 2088585 pairs, ETA 7.8 min
+[08:12:56] Fuzzy scoring: 25750/58145, 69.9 sources/s, 2115824 pairs, ETA 7.7 min
+[08:12:58] Fuzzy scoring: 26000/58145, 70.1 sources/s, 2139869 pairs, ETA 7.6 min
+[08:13:00] Fuzzy scoring: 26250/58145, 70.4 sources/s, 2161793 pairs, ETA 7.5 min
+[08:13:02] Fuzzy scoring: 26500/58145, 70.7 sources/s, 2186093 pairs, ETA 7.5 min
+[08:13:05] Fuzzy scoring: 26750/58145, 70.9 sources/s, 2207444 pairs, ETA 7.4 min
+[08:13:07] Fuzzy scoring: 27000/58145, 71.3 sources/s, 2228353 pairs, ETA 7.3 min
+[08:13:09] Fuzzy scoring: 27250/58145, 71.5 sources/s, 2251250 pairs, ETA 7.2 min
+[08:13:11] Fuzzy scoring: 27500/58145, 71.7 sources/s, 2275084 pairs, ETA 7.1 min
+[08:13:15] Fuzzy scoring: 27750/58145, 71.6 sources/s, 2295817 pairs, ETA 7.1 min
+[08:13:20] Fuzzy scoring: 28000/58145, 71.4 sources/s, 2309807 pairs, ETA 7.0 min
+[08:13:23] Fuzzy scoring: 28250/58145, 71.4 sources/s, 2324685 pairs, ETA 7.0 min
+[08:13:26] Fuzzy scoring: 28500/58145, 71.5 sources/s, 2339656 pairs, ETA 6.9 min
+[08:13:28] Fuzzy scoring: 28750/58145, 71.7 sources/s, 2354352 pairs, ETA 6.8 min
+[08:13:36] Fuzzy scoring: 29000/58145, 71.1 sources/s, 2376162 pairs, ETA 6.8 min
+[08:13:39] Fuzzy scoring: 29250/58145, 71.0 sources/s, 2396177 pairs, ETA 6.8 min
+[08:13:43] Fuzzy scoring: 29500/58145, 71.0 sources/s, 2413519 pairs, ETA 6.7 min
+[08:13:49] Fuzzy scoring: 29750/58145, 70.6 sources/s, 2434095 pairs, ETA 6.7 min
+[08:13:53] Fuzzy scoring: 30000/58145, 70.5 sources/s, 2449377 pairs, ETA 6.7 min
+[08:13:56] Fuzzy scoring: 30250/58145, 70.5 sources/s, 2466002 pairs, ETA 6.6 min
+[08:13:59] Fuzzy scoring: 30500/58145, 70.7 sources/s, 2484777 pairs, ETA 6.5 min
+[08:14:03] Fuzzy scoring: 30750/58145, 70.7 sources/s, 2507387 pairs, ETA 6.5 min
+[08:14:08] Fuzzy scoring: 31000/58145, 70.5 sources/s, 2530646 pairs, ETA 6.4 min
+[08:14:10] Fuzzy scoring: 31250/58145, 70.7 sources/s, 2553731 pairs, ETA 6.3 min
+[08:14:13] Fuzzy scoring: 31500/58145, 70.8 sources/s, 2573201 pairs, ETA 6.3 min
+[08:14:15] Fuzzy scoring: 31750/58145, 71.0 sources/s, 2590592 pairs, ETA 6.2 min
+[08:14:17] Fuzzy scoring: 32000/58145, 71.2 sources/s, 2608031 pairs, ETA 6.1 min
+[08:14:20] Fuzzy scoring: 32250/58145, 71.3 sources/s, 2624546 pairs, ETA 6.1 min
+[08:14:26] Fuzzy scoring: 32500/58145, 71.0 sources/s, 2644631 pairs, ETA 6.0 min
+[08:14:29] Fuzzy scoring: 32750/58145, 71.0 sources/s, 2668978 pairs, ETA 6.0 min
+[08:14:32] Fuzzy scoring: 33000/58145, 71.0 sources/s, 2691106 pairs, ETA 5.9 min
+[08:14:35] Fuzzy scoring: 33250/58145, 71.2 sources/s, 2706441 pairs, ETA 5.8 min
+[08:14:36] Fuzzy scoring: 33500/58145, 71.4 sources/s, 2721409 pairs, ETA 5.7 min
+[08:14:41] Fuzzy scoring: 33750/58145, 71.2 sources/s, 2745930 pairs, ETA 5.7 min
+[08:14:46] Fuzzy scoring: 34000/58145, 71.0 sources/s, 2768300 pairs, ETA 5.7 min
+[08:14:52] Fuzzy scoring: 34250/58145, 70.8 sources/s, 2794379 pairs, ETA 5.6 min
+[08:14:56] Fuzzy scoring: 34500/58145, 70.7 sources/s, 2814764 pairs, ETA 5.6 min
+[08:14:59] Fuzzy scoring: 34750/58145, 70.7 sources/s, 2835356 pairs, ETA 5.5 min
+[08:15:02] Fuzzy scoring: 35000/58145, 70.8 sources/s, 2857163 pairs, ETA 5.4 min
+[08:15:05] Fuzzy scoring: 35250/58145, 70.9 sources/s, 2882202 pairs, ETA 5.4 min
+[08:15:08] Fuzzy scoring: 35500/58145, 71.0 sources/s, 2905283 pairs, ETA 5.3 min
+[08:15:11] Fuzzy scoring: 35750/58145, 71.1 sources/s, 2927110 pairs, ETA 5.3 min
+[08:15:18] Fuzzy scoring: 36000/58145, 70.5 sources/s, 2950205 pairs, ETA 5.2 min
+[08:15:21] Fuzzy scoring: 36250/58145, 70.6 sources/s, 2969441 pairs, ETA 5.2 min
+[08:15:25] Fuzzy scoring: 36500/58145, 70.6 sources/s, 2988376 pairs, ETA 5.1 min
+[08:15:31] Fuzzy scoring: 36750/58145, 70.2 sources/s, 3005451 pairs, ETA 5.1 min
+[08:15:34] Fuzzy scoring: 37000/58145, 70.3 sources/s, 3012210 pairs, ETA 5.0 min
+[08:15:37] Fuzzy scoring: 37250/58145, 70.4 sources/s, 3016333 pairs, ETA 4.9 min
+[08:15:43] Fuzzy scoring: 37500/58145, 70.1 sources/s, 3030819 pairs, ETA 4.9 min
+[08:15:51] Fuzzy scoring: 37750/58145, 69.4 sources/s, 3054289 pairs, ETA 4.9 min
+[08:15:53] Fuzzy scoring: 38000/58145, 69.6 sources/s, 3086289 pairs, ETA 4.8 min
+[08:15:56] Fuzzy scoring: 38250/58145, 69.8 sources/s, 3118289 pairs, ETA 4.8 min
+[08:15:58] Fuzzy scoring: 38500/58145, 70.0 sources/s, 3150289 pairs, ETA 4.7 min
+[08:16:00] Fuzzy scoring: 38750/58145, 70.1 sources/s, 3182289 pairs, ETA 4.6 min
+[08:16:02] Fuzzy scoring: 39000/58145, 70.3 sources/s, 3214289 pairs, ETA 4.5 min
+[08:16:05] Fuzzy scoring: 39250/58145, 70.5 sources/s, 3246289 pairs, ETA 4.5 min
+[08:16:07] Fuzzy scoring: 39500/58145, 70.6 sources/s, 3278289 pairs, ETA 4.4 min
+[08:16:09] Fuzzy scoring: 39750/58145, 70.8 sources/s, 3310289 pairs, ETA 4.3 min
+[08:16:11] Fuzzy scoring: 40000/58145, 70.9 sources/s, 3342289 pairs, ETA 4.3 min
+[08:16:15] Fuzzy scoring: 40250/58145, 70.9 sources/s, 3374289 pairs, ETA 4.2 min
+[08:16:26] Fuzzy scoring: 40500/58145, 70.0 sources/s, 3406289 pairs, ETA 4.2 min
+[08:16:37] Fuzzy scoring: 40750/58145, 69.1 sources/s, 3438289 pairs, ETA 4.2 min
+[08:16:49] Fuzzy scoring: 41000/58145, 68.2 sources/s, 3470289 pairs, ETA 4.2 min
+[08:17:00] Fuzzy scoring: 41250/58145, 67.4 sources/s, 3502289 pairs, ETA 4.2 min
+[08:17:11] Fuzzy scoring: 41500/58145, 66.6 sources/s, 3534289 pairs, ETA 4.2 min
+[08:17:22] Fuzzy scoring: 41750/58145, 65.8 sources/s, 3566289 pairs, ETA 4.1 min
+[08:17:33] Fuzzy scoring: 42000/58145, 65.1 sources/s, 3598289 pairs, ETA 4.1 min
+[08:17:44] Fuzzy scoring: 42250/58145, 64.4 sources/s, 3630289 pairs, ETA 4.1 min
+[08:17:55] Fuzzy scoring: 42500/58145, 63.7 sources/s, 3662289 pairs, ETA 4.1 min
+[08:18:06] Fuzzy scoring: 42750/58145, 63.0 sources/s, 3694289 pairs, ETA 4.1 min
+[08:18:17] Fuzzy scoring: 43000/58145, 62.4 sources/s, 3726289 pairs, ETA 4.0 min
+[08:18:28] Fuzzy scoring: 43250/58145, 61.8 sources/s, 3758289 pairs, ETA 4.0 min
+[08:18:39] Fuzzy scoring: 43500/58145, 61.1 sources/s, 3790289 pairs, ETA 4.0 min
+[08:18:50] Fuzzy scoring: 43750/58145, 60.6 sources/s, 3822289 pairs, ETA 4.0 min
+[08:19:01] Fuzzy scoring: 44000/58145, 60.0 sources/s, 3854289 pairs, ETA 3.9 min
+[08:19:12] Fuzzy scoring: 44250/58145, 59.4 sources/s, 3886289 pairs, ETA 3.9 min
+[08:19:23] Fuzzy scoring: 44500/58145, 58.9 sources/s, 3918289 pairs, ETA 3.9 min
+[08:19:34] Fuzzy scoring: 44750/58145, 58.4 sources/s, 3950289 pairs, ETA 3.8 min
+[08:19:45] Fuzzy scoring: 45000/58145, 57.9 sources/s, 3982289 pairs, ETA 3.8 min
+[08:19:56] Fuzzy scoring: 45250/58145, 57.4 sources/s, 4014289 pairs, ETA 3.7 min
+[08:20:07] Fuzzy scoring: 45500/58145, 56.9 sources/s, 4046289 pairs, ETA 3.7 min
+[08:20:19] Fuzzy scoring: 45750/58145, 56.4 sources/s, 4078289 pairs, ETA 3.7 min
+[08:20:30] Fuzzy scoring: 46000/58145, 56.0 sources/s, 4110289 pairs, ETA 3.6 min
+[08:20:41] Fuzzy scoring: 46250/58145, 55.5 sources/s, 4142289 pairs, ETA 3.6 min
+[08:20:52] Fuzzy scoring: 46500/58145, 55.1 sources/s, 4174289 pairs, ETA 3.5 min
+[08:21:03] Fuzzy scoring: 46750/58145, 54.7 sources/s, 4206289 pairs, ETA 3.5 min
+[08:21:14] Fuzzy scoring: 47000/58145, 54.3 sources/s, 4238289 pairs, ETA 3.4 min
+[08:21:25] Fuzzy scoring: 47250/58145, 53.9 sources/s, 4270289 pairs, ETA 3.4 min
+[08:21:36] Fuzzy scoring: 47500/58145, 53.5 sources/s, 4302289 pairs, ETA 3.3 min
+[08:21:47] Fuzzy scoring: 47750/58145, 53.1 sources/s, 4334289 pairs, ETA 3.3 min
+[08:21:58] Fuzzy scoring: 48000/58145, 52.7 sources/s, 4366289 pairs, ETA 3.2 min
+[08:22:09] Fuzzy scoring: 48250/58145, 52.4 sources/s, 4398289 pairs, ETA 3.2 min
+[08:22:20] Fuzzy scoring: 48500/58145, 52.0 sources/s, 4430289 pairs, ETA 3.1 min
+[08:22:31] Fuzzy scoring: 48750/58145, 51.7 sources/s, 4462289 pairs, ETA 3.0 min
+[08:22:43] Fuzzy scoring: 49000/58145, 51.3 sources/s, 4494289 pairs, ETA 3.0 min
+[08:22:54] Fuzzy scoring: 49250/58145, 51.0 sources/s, 4526289 pairs, ETA 2.9 min
+[08:23:05] Fuzzy scoring: 49500/58145, 50.6 sources/s, 4558289 pairs, ETA 2.8 min
+[08:23:16] Fuzzy scoring: 49750/58145, 50.3 sources/s, 4590289 pairs, ETA 2.8 min
+[08:23:27] Fuzzy scoring: 50000/58145, 50.0 sources/s, 4622289 pairs, ETA 2.7 min
+[08:23:38] Fuzzy scoring: 50250/58145, 49.7 sources/s, 4654289 pairs, ETA 2.6 min
+[08:23:49] Fuzzy scoring: 50500/58145, 49.4 sources/s, 4686289 pairs, ETA 2.6 min
+[08:24:01] Fuzzy scoring: 50750/58145, 49.1 sources/s, 4718289 pairs, ETA 2.5 min
+[08:24:12] Fuzzy scoring: 51000/58145, 48.8 sources/s, 4750289 pairs, ETA 2.4 min
+[08:24:23] Fuzzy scoring: 51250/58145, 48.6 sources/s, 4782289 pairs, ETA 2.4 min
+[08:24:34] Fuzzy scoring: 51500/58145, 48.3 sources/s, 4814289 pairs, ETA 2.3 min
+[08:24:45] Fuzzy scoring: 51750/58145, 48.0 sources/s, 4846289 pairs, ETA 2.2 min
+[08:24:57] Fuzzy scoring: 52000/58145, 47.8 sources/s, 4878289 pairs, ETA 2.1 min
+[08:25:08] Fuzzy scoring: 52250/58145, 47.5 sources/s, 4910289 pairs, ETA 2.1 min
+[08:25:19] Fuzzy scoring: 52500/58145, 47.2 sources/s, 4942289 pairs, ETA 2.0 min
+[08:25:30] Fuzzy scoring: 52750/58145, 47.0 sources/s, 4974289 pairs, ETA 1.9 min
+[08:25:41] Fuzzy scoring: 53000/58145, 46.8 sources/s, 5006289 pairs, ETA 1.8 min
+[08:25:52] Fuzzy scoring: 53250/58145, 46.5 sources/s, 5038289 pairs, ETA 1.8 min
+[08:26:04] Fuzzy scoring: 53500/58145, 46.3 sources/s, 5070289 pairs, ETA 1.7 min
+[08:26:15] Fuzzy scoring: 53750/58145, 46.1 sources/s, 5102289 pairs, ETA 1.6 min
+[08:26:26] Fuzzy scoring: 54000/58145, 45.8 sources/s, 5134289 pairs, ETA 1.5 min
+[08:26:37] Fuzzy scoring: 54250/58145, 45.6 sources/s, 5166289 pairs, ETA 1.4 min
+[08:26:48] Fuzzy scoring: 54500/58145, 45.4 sources/s, 5198289 pairs, ETA 1.3 min
+[08:26:59] Fuzzy scoring: 54750/58145, 45.2 sources/s, 5230289 pairs, ETA 1.3 min
+[08:27:11] Fuzzy scoring: 55000/58145, 45.0 sources/s, 5262289 pairs, ETA 1.2 min
+[08:27:22] Fuzzy scoring: 55250/58145, 44.8 sources/s, 5294289 pairs, ETA 1.1 min
+[08:27:33] Fuzzy scoring: 55500/58145, 44.6 sources/s, 5326289 pairs, ETA 1.0 min
+[08:27:44] Fuzzy scoring: 55750/58145, 44.4 sources/s, 5358289 pairs, ETA 0.9 min
+[08:27:55] Fuzzy scoring: 56000/58145, 44.2 sources/s, 5390289 pairs, ETA 0.8 min
+[08:28:06] Fuzzy scoring: 56250/58145, 44.0 sources/s, 5422289 pairs, ETA 0.7 min
+[08:28:18] Fuzzy scoring: 56500/58145, 43.8 sources/s, 5454289 pairs, ETA 0.6 min
+[08:28:29] Fuzzy scoring: 56750/58145, 43.6 sources/s, 5486289 pairs, ETA 0.5 min
+[08:28:40] Fuzzy scoring: 57000/58145, 43.4 sources/s, 5518289 pairs, ETA 0.4 min
+[08:28:51] Fuzzy scoring: 57250/58145, 43.3 sources/s, 5550289 pairs, ETA 0.3 min
+[08:29:02] Fuzzy scoring: 57500/58145, 43.1 sources/s, 5582289 pairs, ETA 0.2 min
+[08:29:13] Fuzzy scoring: 57750/58145, 42.9 sources/s, 5614289 pairs, ETA 0.2 min
+[08:29:24] Fuzzy scoring: 58000/58145, 42.7 sources/s, 5646289 pairs, ETA 0.1 min
+[08:29:31] Fuzzy scoring: 58145/58145, 42.6 sources/s, 5664849 pairs, ETA 0.0 min
+[08:29:31] Fuzzy scoring complete: 5664849 pairs, 297 mutual candidates (1363.5s)
+[08:29:31] Round 3, fuzzy match: 297 matches
+[08:29:31] Candidate index: 58145 sources, 5664849 candidates, 97.4 average
+[08:29:31] Propagation anchors: 20879
+[08:29:32] Checkpoint saved: fuzzy_match (20879 matches)
+[08:29:34] Propagation min_score=2, pass 1: +1199
+[08:29:35] Checkpoint saved: propagation_2_1 (22078 matches)
+[08:29:36] Propagation min_score=2, pass 2: +127
+[08:29:37] Checkpoint saved: propagation_2_2 (22205 matches)
+[08:29:38] Propagation min_score=2, pass 3: +7
+[08:29:39] Checkpoint saved: propagation_2_3 (22212 matches)
+[08:29:40] Propagation min_score=2, pass 4: +1
+[08:29:41] Checkpoint saved: propagation_2_4 (22213 matches)
+[08:29:42] Propagation min_score=2, pass 5: +0
+[08:29:43] Checkpoint saved: propagation_2_5 (22213 matches)
+[08:29:45] Propagation min_score=1, pass 1: +1287
+[08:29:45] Checkpoint saved: propagation_1_1 (23500 matches)
+[08:29:47] Propagation min_score=1, pass 2: +60
+[08:29:48] Checkpoint saved: propagation_1_2 (23560 matches)
+[08:29:49] Propagation min_score=1, pass 3: +9
+[08:29:50] Checkpoint saved: propagation_1_3 (23569 matches)
+[08:29:51] Propagation min_score=1, pass 4: +4
+[08:29:52] Checkpoint saved: propagation_1_4 (23573 matches)
+[08:29:53] Propagation min_score=1, pass 5: +2
+[08:29:54] Checkpoint saved: propagation_1_5 (23575 matches)
+[08:29:55] Propagation min_score=1, pass 6: +1
+[08:29:56] Checkpoint saved: propagation_1_6 (23576 matches)
+[08:29:57] Propagation min_score=1, pass 7: +1
+[08:29:58] Checkpoint saved: propagation_1_7 (23577 matches)
+[08:30:00] Propagation min_score=1, pass 8: +0
+[08:30:00] Checkpoint saved: propagation_1_8 (23577 matches)
+[08:30:01] Match summary
+[08:30:01] Applied names: 23577
+[08:30:01] Exact hash: 18136
+[08:30:01] String match: 2446
+[08:30:01] Fuzzy match: 297
+[08:30:01] Call graph: 2698
+[08:30:01] Unmatched: 55150
+[08:30:01] Report: match.json (33.9 min)
+[10:07:44] import_and_match started
+[10:07:47] Loaded 172849 source functions in 2.9s (json)
+[10:07:47] Building string index...
+[10:07:48] String index ready: 38812 strings, 46273 references, 12033 functions, 24015 rare keys, 21661 normalized keys (1.4s)
+[10:07:48] Collecting features for 76385 functions...
+[10:07:51] Features: 2000/76385, 696.4 functions/s, ETA 1.8 min
+[10:07:53] Features: 4000/76385, 878.2 functions/s, ETA 1.4 min
+[10:07:55] Features: 6000/76385, 860.1 functions/s, ETA 1.4 min
+[10:07:57] Features: 8000/76385, 921.9 functions/s, ETA 1.2 min
+[10:07:59] Features: 10000/76385, 946.9 functions/s, ETA 1.2 min
+[10:08:01] Features: 12000/76385, 908.8 functions/s, ETA 1.2 min
+[10:08:03] Features: 14000/76385, 925.9 functions/s, ETA 1.1 min
+[10:08:05] Features: 16000/76385, 931.1 functions/s, ETA 1.1 min
+[10:08:07] Features: 18000/76385, 962.1 functions/s, ETA 1.0 min
+[10:08:08] Features: 20000/76385, 981.2 functions/s, ETA 1.0 min
+[10:08:10] Features: 22000/76385, 983.1 functions/s, ETA 0.9 min
+[10:08:11] Features: 24000/76385, 1034.2 functions/s, ETA 0.8 min
+[10:08:13] Features: 26000/76385, 1058.1 functions/s, ETA 0.8 min
+[10:08:15] Features: 28000/76385, 1048.8 functions/s, ETA 0.8 min
+[10:08:21] Features: 30000/76385, 915.0 functions/s, ETA 0.8 min
+[10:08:22] Features: 32000/76385, 934.1 functions/s, ETA 0.8 min
+[10:08:24] Features: 34000/76385, 937.7 functions/s, ETA 0.8 min
+[10:08:26] Features: 36000/76385, 941.1 functions/s, ETA 0.7 min
+[10:08:28] Features: 38000/76385, 953.9 functions/s, ETA 0.7 min
+[10:08:29] Features: 40000/76385, 968.0 functions/s, ETA 0.6 min
+[10:08:31] Features: 42000/76385, 979.0 functions/s, ETA 0.6 min
+[10:08:32] Features: 44000/76385, 998.1 functions/s, ETA 0.5 min
+[10:08:34] Features: 46000/76385, 996.7 functions/s, ETA 0.5 min
+[10:08:37] Features: 48000/76385, 987.2 functions/s, ETA 0.5 min
+[10:08:39] Features: 50000/76385, 989.2 functions/s, ETA 0.4 min
+[10:08:42] Features: 52000/76385, 963.2 functions/s, ETA 0.4 min
+[10:08:44] Features: 54000/76385, 962.6 functions/s, ETA 0.4 min
+[10:08:45] Features: 56000/76385, 980.5 functions/s, ETA 0.3 min
+[10:08:45] Features: 58000/76385, 1011.8 functions/s, ETA 0.3 min
+[10:08:46] Features: 60000/76385, 1044.3 functions/s, ETA 0.3 min
+[10:08:46] Features: 62000/76385, 1077.2 functions/s, ETA 0.2 min
+[10:08:46] Features: 64000/76385, 1110.0 functions/s, ETA 0.2 min
+[10:08:46] Features: 66000/76385, 1142.6 functions/s, ETA 0.2 min
+[10:08:46] Features: 68000/76385, 1175.1 functions/s, ETA 0.1 min
+[10:08:46] Features: 70000/76385, 1207.4 functions/s, ETA 0.1 min
+[10:08:46] Features: 72000/76385, 1239.7 functions/s, ETA 0.1 min
+[10:08:46] Features: 74000/76385, 1271.8 functions/s, ETA 0.0 min
+[10:08:46] Features: 76000/76385, 1303.8 functions/s, ETA 0.0 min
+[10:08:46] Feature collection complete: 76385 functions (58.3s)
+[10:08:46] Found 76385 target functions
+[10:08:48] Round 0, existing names: 11621 anchors
+[10:08:48] Round 1, exact hash: 3479 matches
+[10:08:49] Checkpoint saved: exact_hash (15070 matches)
+[10:08:50] Round 2, string match: 1474 matches
+[10:08:50] Checkpoint saved: string_match (16544 matches)
+[10:09:09] Fuzzy scoring: 250/156305, 13.7 sources/s, 26078 pairs, ETA 190.5 min
+[10:11:57] import_and_match started
+[10:12:00] Loaded 172849 source functions in 2.8s (json)
+[10:12:00] Building string index...
+[10:12:01] String index ready: 38812 strings, 46273 references, 12033 functions, 24015 rare keys, 21661 normalized keys (1.4s)
+[10:12:02] Collecting features for 76385 functions...
+[10:12:04] Features: 2000/76385, 691.1 functions/s, ETA 1.8 min
+[10:12:06] Features: 4000/76385, 866.9 functions/s, ETA 1.4 min
+[10:12:08] Features: 6000/76385, 898.2 functions/s, ETA 1.3 min
+[10:12:10] Features: 8000/76385, 960.7 functions/s, ETA 1.2 min
+[10:12:12] Features: 10000/76385, 985.1 functions/s, ETA 1.1 min
+[10:12:14] Features: 12000/76385, 939.0 functions/s, ETA 1.1 min
+[10:12:16] Features: 14000/76385, 953.3 functions/s, ETA 1.1 min
+[10:12:18] Features: 16000/76385, 959.4 functions/s, ETA 1.0 min
+[10:12:20] Features: 18000/76385, 977.1 functions/s, ETA 1.0 min
+[10:12:22] Features: 20000/76385, 997.0 functions/s, ETA 0.9 min
+[10:12:24] Features: 22000/76385, 998.8 functions/s, ETA 0.9 min
+[10:12:24] Features: 24000/76385, 1050.8 functions/s, ETA 0.8 min
+[10:12:26] Features: 26000/76385, 1074.4 functions/s, ETA 0.8 min
+[10:12:28] Features: 28000/76385, 1066.2 functions/s, ETA 0.8 min
+[10:12:34] Features: 30000/76385, 937.7 functions/s, ETA 0.8 min
+[10:12:35] Features: 32000/76385, 957.8 functions/s, ETA 0.8 min
+[10:12:37] Features: 34000/76385, 961.2 functions/s, ETA 0.7 min
+[10:12:39] Features: 36000/76385, 964.4 functions/s, ETA 0.7 min
+[10:12:40] Features: 38000/76385, 977.0 functions/s, ETA 0.7 min
+[10:12:42] Features: 40000/76385, 990.9 functions/s, ETA 0.6 min
+[10:12:43] Features: 42000/76385, 1003.0 functions/s, ETA 0.6 min
+[10:12:45] Features: 44000/76385, 1022.9 functions/s, ETA 0.5 min
+[10:12:47] Features: 46000/76385, 1021.2 functions/s, ETA 0.5 min
+[10:12:49] Features: 48000/76385, 1020.3 functions/s, ETA 0.5 min
+[10:12:50] Features: 50000/76385, 1021.7 functions/s, ETA 0.4 min
+[10:12:54] Features: 52000/76385, 994.6 functions/s, ETA 0.4 min
+[10:12:56] Features: 54000/76385, 992.7 functions/s, ETA 0.4 min
+[10:12:57] Features: 56000/76385, 1010.6 functions/s, ETA 0.3 min
+[10:12:57] Features: 58000/76385, 1042.8 functions/s, ETA 0.3 min
+[10:12:57] Features: 60000/76385, 1076.2 functions/s, ETA 0.3 min
+[10:12:57] Features: 62000/76385, 1110.0 functions/s, ETA 0.2 min
+[10:12:58] Features: 64000/76385, 1134.7 functions/s, ETA 0.2 min
+[10:12:58] Features: 66000/76385, 1168.0 functions/s, ETA 0.1 min
+[10:12:58] Features: 68000/76385, 1201.2 functions/s, ETA 0.1 min
+[10:12:58] Features: 70000/76385, 1234.3 functions/s, ETA 0.1 min
+[10:12:58] Features: 72000/76385, 1267.3 functions/s, ETA 0.1 min
+[10:12:58] Features: 74000/76385, 1300.1 functions/s, ETA 0.0 min
+[10:12:59] Features: 76000/76385, 1332.8 functions/s, ETA 0.0 min
+[10:12:59] Feature collection complete: 76385 functions (57.0s)
+[10:12:59] Found 76385 target functions
+[10:12:59] Round 0, existing names: 16462 anchors
+[10:12:59] Round 1, exact hash: 82 matches
+[10:12:59] Checkpoint saved: exact_hash (16508 matches)
+[10:13:00] Round 2, string match: 124 matches
+[10:13:00] Checkpoint saved: string_match (16632 matches)
+[10:13:01] Global fuzzy input pruned: 156217 -> 41153 functions; 115064 absent/unsupported v67 functions deferred
+[10:13:01] Fuzzy scoring: 250/41153, 2311.3 sources/s, 9431 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 500/41153, 2108.0 sources/s, 21247 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 750/41153, 1947.7 sources/s, 35352 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 1000/41153, 2310.5 sources/s, 39830 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 1250/41153, 2479.1 sources/s, 45919 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 1500/41153, 2493.0 sources/s, 55371 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 1750/41153, 2534.1 sources/s, 62682 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 2000/41153, 2449.0 sources/s, 74232 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 2250/41153, 2510.7 sources/s, 80105 pairs, ETA 0.3 min
+[10:13:01] Fuzzy scoring: 2500/41153, 2693.3 sources/s, 81686 pairs, ETA 0.2 min
+[10:13:01] Fuzzy scoring: 2750/41153, 2859.9 sources/s, 83273 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 3000/41153, 3022.1 sources/s, 84941 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 3250/41153, 3127.9 sources/s, 88276 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 3500/41153, 3131.5 sources/s, 94565 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 3750/41153, 3123.3 sources/s, 101056 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 4000/41153, 3043.0 sources/s, 112099 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 4250/41153, 2880.7 sources/s, 127979 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 4500/41153, 2782.1 sources/s, 141658 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 4750/41153, 2625.2 sources/s, 160984 pairs, ETA 0.2 min
+[10:13:02] Fuzzy scoring: 5000/41153, 2555.4 sources/s, 175812 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 5250/41153, 2461.1 sources/s, 193200 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 5500/41153, 2407.5 sources/s, 206697 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 5750/41153, 2430.4 sources/s, 214492 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 6000/41153, 2419.8 sources/s, 225149 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 6250/41153, 2410.6 sources/s, 235914 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 6500/41153, 2402.3 sources/s, 246547 pairs, ETA 0.2 min
+[10:13:03] Fuzzy scoring: 6750/41153, 2397.9 sources/s, 257069 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 7000/41153, 2302.1 sources/s, 276099 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 7250/41153, 2282.5 sources/s, 289087 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 7500/41153, 2308.7 sources/s, 295344 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 7750/41153, 2341.7 sources/s, 301082 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 8000/41153, 2343.6 sources/s, 311042 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 8250/41153, 2343.9 sources/s, 321422 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 8500/41153, 2338.2 sources/s, 332195 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 8750/41153, 2338.5 sources/s, 342198 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 9000/41153, 2370.3 sources/s, 346988 pairs, ETA 0.2 min
+[10:13:04] Fuzzy scoring: 9250/41153, 2391.5 sources/s, 353437 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 9500/41153, 2381.2 sources/s, 364184 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 9750/41153, 2363.9 sources/s, 376828 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 10000/41153, 2319.6 sources/s, 393725 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 10250/41153, 2288.8 sources/s, 409312 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 10500/41153, 2250.3 sources/s, 426213 pairs, ETA 0.2 min
+[10:13:05] Fuzzy scoring: 10750/41153, 2211.1 sources/s, 443804 pairs, ETA 0.2 min
+[10:13:06] Fuzzy scoring: 11000/41153, 2168.1 sources/s, 462784 pairs, ETA 0.2 min
+[10:13:06] Fuzzy scoring: 11250/41153, 2143.3 sources/s, 479308 pairs, ETA 0.2 min
+[10:13:06] Fuzzy scoring: 11500/41153, 2117.4 sources/s, 496902 pairs, ETA 0.2 min
+[10:13:06] Fuzzy scoring: 11750/41153, 2053.7 sources/s, 524149 pairs, ETA 0.2 min
+[10:13:06] Fuzzy scoring: 12000/41153, 2026.1 sources/s, 542526 pairs, ETA 0.2 min
+[10:13:07] Fuzzy scoring: 12250/41153, 2004.6 sources/s, 560876 pairs, ETA 0.2 min
+[10:13:07] Fuzzy scoring: 12500/41153, 1978.7 sources/s, 579595 pairs, ETA 0.2 min
+[10:13:07] Fuzzy scoring: 12750/41153, 1961.8 sources/s, 597330 pairs, ETA 0.2 min
+[10:13:07] Fuzzy scoring: 13000/41153, 1953.1 sources/s, 613176 pairs, ETA 0.2 min
+[10:13:07] Fuzzy scoring: 13250/41153, 1919.2 sources/s, 635458 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 13500/41153, 1905.4 sources/s, 652636 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 13750/41153, 1931.1 sources/s, 655514 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 14000/41153, 1959.1 sources/s, 657595 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 14250/41153, 1984.7 sources/s, 660426 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 14500/41153, 2001.4 sources/s, 665182 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 14750/41153, 2007.3 sources/s, 673816 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 15000/41153, 2018.4 sources/s, 680554 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 15250/41153, 2032.7 sources/s, 686077 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 15500/41153, 2024.9 sources/s, 699893 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 15750/41153, 2031.7 sources/s, 708435 pairs, ETA 0.2 min
+[10:13:08] Fuzzy scoring: 16000/41153, 2038.7 sources/s, 716265 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 16250/41153, 2031.5 sources/s, 730160 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 16500/41153, 2035.3 sources/s, 739603 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 16750/41153, 2032.5 sources/s, 751652 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 17000/41153, 2026.1 sources/s, 765910 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 17250/41153, 2025.1 sources/s, 777741 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 17500/41153, 2020.3 sources/s, 790253 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 17750/41153, 2021.7 sources/s, 801268 pairs, ETA 0.2 min
+[10:13:09] Fuzzy scoring: 18000/41153, 2023.7 sources/s, 811190 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 18250/41153, 2025.9 sources/s, 821084 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 18500/41153, 2018.0 sources/s, 835399 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 18750/41153, 2015.5 sources/s, 847674 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 19000/41153, 2016.5 sources/s, 858846 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 19250/41153, 2014.3 sources/s, 870306 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 19500/41153, 2010.7 sources/s, 883108 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 19750/41153, 2015.8 sources/s, 891881 pairs, ETA 0.2 min
+[10:13:10] Fuzzy scoring: 20000/41153, 2021.1 sources/s, 900084 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 20250/41153, 2016.2 sources/s, 912994 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 20500/41153, 2010.8 sources/s, 925872 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 20750/41153, 2008.5 sources/s, 937801 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 21000/41153, 2006.4 sources/s, 949722 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 21250/41153, 2009.6 sources/s, 958653 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 21500/41153, 2000.3 sources/s, 974554 pairs, ETA 0.2 min
+[10:13:11] Fuzzy scoring: 21750/41153, 1996.1 sources/s, 986780 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 22000/41153, 1999.4 sources/s, 995835 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 22250/41153, 2003.4 sources/s, 1005261 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 22500/41153, 2006.5 sources/s, 1015420 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 22750/41153, 2005.5 sources/s, 1026602 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 23000/41153, 2014.0 sources/s, 1032330 pairs, ETA 0.2 min
+[10:13:12] Fuzzy scoring: 23250/41153, 2014.6 sources/s, 1042690 pairs, ETA 0.1 min
+[10:13:12] Fuzzy scoring: 23500/41153, 2024.1 sources/s, 1048343 pairs, ETA 0.1 min
+[10:13:12] Fuzzy scoring: 23750/41153, 2035.1 sources/s, 1052892 pairs, ETA 0.1 min
+[10:13:12] Fuzzy scoring: 24000/41153, 2049.1 sources/s, 1056190 pairs, ETA 0.1 min
+[10:13:12] Fuzzy scoring: 24250/41153, 2048.0 sources/s, 1066391 pairs, ETA 0.1 min
+[10:13:12] Fuzzy scoring: 24500/41153, 2055.1 sources/s, 1073153 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 24750/41153, 2064.8 sources/s, 1078814 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 25000/41153, 2077.2 sources/s, 1082848 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 25250/41153, 2083.7 sources/s, 1089569 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 25500/41153, 2087.4 sources/s, 1098139 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 25750/41153, 2092.0 sources/s, 1105796 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 26000/41153, 2096.9 sources/s, 1113780 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 26250/41153, 2100.9 sources/s, 1121752 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 26500/41153, 2108.0 sources/s, 1128260 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 26750/41153, 2116.3 sources/s, 1134154 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 27000/41153, 2118.6 sources/s, 1142739 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 27250/41153, 2121.7 sources/s, 1151230 pairs, ETA 0.1 min
+[10:13:13] Fuzzy scoring: 27500/41153, 2130.8 sources/s, 1156202 pairs, ETA 0.1 min
+[10:13:14] Fuzzy scoring: 27750/41153, 2129.1 sources/s, 1168912 pairs, ETA 0.1 min
+[10:13:14] Fuzzy scoring: 28000/41153, 2131.3 sources/s, 1178981 pairs, ETA 0.1 min
+[10:13:14] Fuzzy scoring: 28250/41153, 2098.6 sources/s, 1203693 pairs, ETA 0.1 min
+[10:13:14] Fuzzy scoring: 28500/41153, 2057.9 sources/s, 1232088 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 28750/41153, 2034.1 sources/s, 1253802 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 29000/41153, 2018.4 sources/s, 1272588 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 29250/41153, 2027.7 sources/s, 1277231 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 29500/41153, 2037.4 sources/s, 1281529 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 29750/41153, 2043.3 sources/s, 1288694 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 30000/41153, 2049.7 sources/s, 1295236 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 30250/41153, 2058.1 sources/s, 1299993 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 30500/41153, 2065.1 sources/s, 1306074 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 30750/41153, 2069.3 sources/s, 1313736 pairs, ETA 0.1 min
+[10:13:15] Fuzzy scoring: 31000/41153, 2073.0 sources/s, 1321592 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 31250/41153, 2078.1 sources/s, 1328928 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 31500/41153, 2086.2 sources/s, 1333884 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 31750/41153, 2095.9 sources/s, 1338087 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 32000/41153, 2100.6 sources/s, 1345273 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 32250/41153, 2103.5 sources/s, 1353781 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 32500/41153, 2110.4 sources/s, 1359936 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 32750/41153, 2106.3 sources/s, 1373439 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 33000/41153, 2095.4 sources/s, 1391226 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 33250/41153, 2098.6 sources/s, 1400018 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 33500/41153, 2107.8 sources/s, 1403254 pairs, ETA 0.1 min
+[10:13:16] Fuzzy scoring: 33750/41153, 2116.3 sources/s, 1407451 pairs, ETA 0.1 min
+[10:13:17] Fuzzy scoring: 34000/41153, 2122.5 sources/s, 1413121 pairs, ETA 0.1 min
+[10:13:17] Fuzzy scoring: 34250/41153, 2124.0 sources/s, 1421767 pairs, ETA 0.1 min
+[10:13:17] Fuzzy scoring: 34500/41153, 2126.1 sources/s, 1429551 pairs, ETA 0.1 min
+[10:13:17] Fuzzy scoring: 34750/41153, 2126.2 sources/s, 1438656 pairs, ETA 0.1 min
+[10:13:17] Fuzzy scoring: 35000/41153, 2131.0 sources/s, 1444876 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 35250/41153, 2135.2 sources/s, 1451171 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 35500/41153, 2140.5 sources/s, 1456842 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 35750/41153, 2145.7 sources/s, 1462657 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 36000/41153, 2152.7 sources/s, 1467352 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 36250/41153, 2160.2 sources/s, 1471858 pairs, ETA 0.0 min
+[10:13:17] Fuzzy scoring: 36500/41153, 2160.3 sources/s, 1481480 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 36750/41153, 2159.1 sources/s, 1492378 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 37000/41153, 2156.7 sources/s, 1503843 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 37250/41153, 2160.6 sources/s, 1510348 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 37500/41153, 2157.3 sources/s, 1521610 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 37750/41153, 2158.7 sources/s, 1529754 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 38000/41153, 2164.9 sources/s, 1534472 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 38250/41153, 2171.3 sources/s, 1539476 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 38500/41153, 2176.4 sources/s, 1545320 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 38750/41153, 2181.0 sources/s, 1550908 pairs, ETA 0.0 min
+[10:13:18] Fuzzy scoring: 39000/41153, 2187.6 sources/s, 1555739 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 39250/41153, 2183.7 sources/s, 1568059 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 39500/41153, 2187.5 sources/s, 1575473 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 39750/41153, 2190.0 sources/s, 1583189 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 40000/41153, 2182.7 sources/s, 1598201 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 40250/41153, 2184.9 sources/s, 1606112 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 40500/41153, 2190.0 sources/s, 1612135 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 40750/41153, 2191.6 sources/s, 1620717 pairs, ETA 0.0 min
+[10:13:19] Fuzzy scoring: 41000/41153, 2178.6 sources/s, 1633911 pairs, ETA 0.0 min
+[10:13:20] Fuzzy scoring: 41153/41153, 2167.8 sources/s, 1640776 pairs, ETA 0.0 min
+[10:13:20] Fuzzy scoring complete: 1640776 pairs, 159 mutual candidates (19.0s)
+[10:13:20] Round 3, fuzzy match: 157 matches
+[10:13:20] Candidate index: 41153 sources, 1640776 candidates, 39.9 average
+[10:13:20] Candidate paths: 41153 strong, 0 shape fallback, 0 large intersections
+[10:13:20] Candidate pruning: 115064 source functions skipped without cross-version evidence
+[10:13:20] Propagation anchors: 16825
+[10:13:20] Checkpoint saved: fuzzy_match (16789 matches)
+[10:13:56] Propagation signals=2, pass 1: +3353
+[10:13:56] Checkpoint saved: propagation_2_1 (20142 matches)
+[10:15:31] Propagation signals=2, pass 2: +1698
+[10:15:31] Checkpoint saved: propagation_2_2 (21840 matches)
+[10:18:36] Propagation signals=2, pass 3: +591
+[10:18:36] Checkpoint saved: propagation_2_3 (22431 matches)
+[10:21:32] Propagation signals=2, pass 4: +211
+[10:21:33] Checkpoint saved: propagation_2_4 (22642 matches)
+[10:24:33] Propagation signals=2, pass 5: +140
+[10:24:33] Checkpoint saved: propagation_2_5 (22782 matches)
+[10:27:26] import_and_match started
+[10:27:29] Loaded 172849 source functions in 2.6s (json)
+[10:27:29] Building string index...
+[10:27:30] String index ready: 38812 strings, 46276 references, 12040 functions, 24015 rare keys, 21661 normalized keys (1.6s)
+[10:27:30] Collecting features for 76972 functions...
+[10:27:33] Features: 2000/76972, 680.9 functions/s, ETA 1.8 min
+[10:27:35] Features: 4000/76972, 867.6 functions/s, ETA 1.4 min
+[10:27:37] Features: 6000/76972, 902.1 functions/s, ETA 1.3 min
+[10:27:39] Features: 8000/76972, 965.1 functions/s, ETA 1.2 min
+[10:27:40] Features: 10000/76972, 988.5 functions/s, ETA 1.1 min
+[10:27:43] Features: 12000/76972, 942.9 functions/s, ETA 1.1 min
+[10:27:45] Features: 14000/76972, 957.3 functions/s, ETA 1.1 min
+[10:27:47] Features: 16000/76972, 961.4 functions/s, ETA 1.1 min
+[10:27:48] Features: 18000/76972, 996.8 functions/s, ETA 1.0 min
+[10:27:50] Features: 20000/76972, 1013.1 functions/s, ETA 0.9 min
+[10:27:52] Features: 22000/76972, 1013.7 functions/s, ETA 0.9 min
+[10:27:53] Features: 24000/76972, 1065.6 functions/s, ETA 0.8 min
+[10:27:54] Features: 26000/76972, 1088.4 functions/s, ETA 0.8 min
+[10:27:56] Features: 28000/76972, 1081.0 functions/s, ETA 0.8 min
+[10:28:02] Features: 30000/76972, 950.4 functions/s, ETA 0.8 min
+[10:28:03] Features: 32000/76972, 970.9 functions/s, ETA 0.8 min
+[10:28:05] Features: 34000/76972, 966.5 functions/s, ETA 0.7 min
+[10:28:08] Features: 36000/76972, 967.1 functions/s, ETA 0.7 min
+[10:28:09] Features: 38000/76972, 973.6 functions/s, ETA 0.7 min
+[10:28:11] Features: 40000/76972, 985.5 functions/s, ETA 0.6 min
+[10:28:12] Features: 42000/76972, 998.6 functions/s, ETA 0.6 min
+[10:28:14] Features: 44000/76972, 1013.7 functions/s, ETA 0.5 min
+[10:28:16] Features: 46000/76972, 1016.8 functions/s, ETA 0.5 min
+[10:28:17] Features: 48000/76972, 1021.5 functions/s, ETA 0.5 min
+[10:28:19] Features: 50000/76972, 1018.1 functions/s, ETA 0.4 min
+[10:28:23] Features: 52000/76972, 995.9 functions/s, ETA 0.4 min
+[10:28:25] Features: 54000/76972, 986.7 functions/s, ETA 0.4 min
+[10:28:26] Features: 56000/76972, 1001.3 functions/s, ETA 0.3 min
+[10:28:27] Features: 58000/76972, 1030.7 functions/s, ETA 0.3 min
+[10:28:27] Features: 60000/76972, 1062.6 functions/s, ETA 0.3 min
+[10:28:27] Features: 62000/76972, 1096.0 functions/s, ETA 0.2 min
+[10:28:27] Features: 64000/76972, 1129.2 functions/s, ETA 0.2 min
+[10:28:27] Features: 66000/76972, 1162.4 functions/s, ETA 0.2 min
+[10:28:27] Features: 68000/76972, 1195.4 functions/s, ETA 0.1 min
+[10:28:27] Features: 70000/76972, 1228.3 functions/s, ETA 0.1 min
+[10:28:27] Features: 72000/76972, 1261.1 functions/s, ETA 0.1 min
+[10:28:28] Features: 74000/76972, 1293.8 functions/s, ETA 0.0 min
+[10:28:28] Features: 76000/76972, 1326.4 functions/s, ETA 0.0 min
+[10:28:28] Feature collection complete: 76972 functions (57.3s)
+[10:28:28] Found 76972 target functions
+[10:28:29] Round 0, existing names: 22631 anchors
+[10:28:29] Round 1, exact hash: 160 matches
+[10:28:29] Checkpoint saved: exact_hash (22721 matches)
+[10:28:29] Round 2, string match: 98 matches
+[10:28:30] Checkpoint saved: string_match (22819 matches)
+[10:28:30] Global fuzzy input pruned: 150030 -> 34417 functions; 115613 absent/unsupported v67 functions deferred
+[10:28:30] Fuzzy scoring: 250/34417, 2483.2 sources/s, 8660 pairs, ETA 0.2 min
+[10:28:30] Fuzzy scoring: 500/34417, 2409.6 sources/s, 18867 pairs, ETA 0.2 min
+[10:28:30] Fuzzy scoring: 750/34417, 2204.1 sources/s, 31539 pairs, ETA 0.3 min
+[10:28:30] Fuzzy scoring: 1000/34417, 2649.1 sources/s, 35092 pairs, ETA 0.2 min
+[10:28:30] Fuzzy scoring: 1250/34417, 2756.6 sources/s, 41390 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 1500/34417, 2881.9 sources/s, 48337 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 1750/34417, 3059.7 sources/s, 52536 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 2000/34417, 2952.6 sources/s, 61893 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 2250/34417, 3132.1 sources/s, 64093 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 2500/34417, 3350.5 sources/s, 65462 pairs, ETA 0.2 min
+[10:28:31] Fuzzy scoring: 2750/34417, 3551.0 sources/s, 66855 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 3000/34417, 3746.4 sources/s, 68516 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 3250/34417, 3908.7 sources/s, 70767 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 3500/34417, 3930.9 sources/s, 75410 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 3750/34417, 3988.5 sources/s, 79538 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 4000/34417, 3865.9 sources/s, 88322 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 4250/34417, 3813.9 sources/s, 95509 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 4500/34417, 3798.2 sources/s, 102104 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 4750/34417, 3805.2 sources/s, 107958 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 5000/34417, 3821.2 sources/s, 113451 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 5250/34417, 3844.1 sources/s, 118672 pairs, ETA 0.1 min
+[10:28:31] Fuzzy scoring: 5500/34417, 3812.5 sources/s, 125867 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 5750/34417, 3800.4 sources/s, 132028 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 6000/34417, 3808.9 sources/s, 137772 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 6250/34417, 3651.9 sources/s, 151182 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 6500/34417, 3590.6 sources/s, 160973 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 6750/34417, 3619.5 sources/s, 165962 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 7000/34417, 3620.4 sources/s, 172461 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 7250/34417, 3588.3 sources/s, 180421 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 7500/34417, 3612.6 sources/s, 185042 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 7750/34417, 3626.0 sources/s, 190731 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 8000/34417, 3635.9 sources/s, 196236 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 8250/34417, 3637.2 sources/s, 202213 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 8500/34417, 3670.8 sources/s, 206574 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 8750/34417, 3703.4 sources/s, 210764 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 9000/34417, 3729.8 sources/s, 215238 pairs, ETA 0.1 min
+[10:28:32] Fuzzy scoring: 9250/34417, 3751.6 sources/s, 219726 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 9500/34417, 3782.4 sources/s, 223566 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 9750/34417, 3804.5 sources/s, 228001 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 10000/34417, 3811.6 sources/s, 233157 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 10250/34417, 3842.3 sources/s, 236625 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 10500/34417, 3897.9 sources/s, 238489 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 10750/34417, 3947.3 sources/s, 240968 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 11000/34417, 3964.1 sources/s, 244996 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 11250/34417, 3926.3 sources/s, 252809 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 11500/34417, 3919.8 sources/s, 258623 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 11750/34417, 3900.7 sources/s, 265655 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 12000/34417, 3819.6 sources/s, 277616 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 12250/34417, 3783.3 sources/s, 286210 pairs, ETA 0.1 min
+[10:28:33] Fuzzy scoring: 12500/34417, 3740.2 sources/s, 295580 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 12750/34417, 3663.1 sources/s, 308789 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 13000/34417, 3637.6 sources/s, 317096 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 13250/34417, 3555.4 sources/s, 330713 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 13500/34417, 3496.4 sources/s, 343418 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 13750/34417, 3452.9 sources/s, 354600 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 14000/34417, 3408.7 sources/s, 366512 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 14250/34417, 3377.4 sources/s, 376846 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 14500/34417, 3366.1 sources/s, 384233 pairs, ETA 0.1 min
+[10:28:34] Fuzzy scoring: 14750/34417, 3368.3 sources/s, 390509 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 15000/34417, 3328.1 sources/s, 402547 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 15250/34417, 3324.9 sources/s, 409574 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 15500/34417, 3336.5 sources/s, 414602 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 15750/34417, 3312.4 sources/s, 424350 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 16000/34417, 3334.3 sources/s, 427919 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 16250/34417, 3324.1 sources/s, 435828 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 16500/34417, 3314.2 sources/s, 443195 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 16750/34417, 3292.0 sources/s, 452695 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 17000/34417, 3285.5 sources/s, 460057 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 17250/34417, 3264.8 sources/s, 470015 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 17500/34417, 3254.3 sources/s, 478207 pairs, ETA 0.1 min
+[10:28:35] Fuzzy scoring: 17750/34417, 3263.6 sources/s, 483208 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 18000/34417, 3239.9 sources/s, 494696 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 18250/34417, 3239.8 sources/s, 501682 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 18500/34417, 3211.1 sources/s, 512991 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 18750/34417, 3215.9 sources/s, 518582 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 19000/34417, 3203.4 sources/s, 527170 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 19250/34417, 3218.4 sources/s, 531345 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 19500/34417, 3233.7 sources/s, 535492 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 19750/34417, 3216.0 sources/s, 543841 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 20000/34417, 3215.5 sources/s, 550130 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 20250/34417, 3214.2 sources/s, 556536 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 20500/34417, 3227.4 sources/s, 560821 pairs, ETA 0.1 min
+[10:28:36] Fuzzy scoring: 20750/34417, 3229.7 sources/s, 567033 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 21000/34417, 3216.9 sources/s, 576040 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 21250/34417, 3202.1 sources/s, 585817 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 21500/34417, 3203.0 sources/s, 592247 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 21750/34417, 3197.4 sources/s, 600164 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 22000/34417, 3204.9 sources/s, 605479 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 22250/34417, 3195.7 sources/s, 613905 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 22500/34417, 3185.2 sources/s, 622545 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 22750/34417, 3191.8 sources/s, 627814 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 23000/34417, 3180.5 sources/s, 638422 pairs, ETA 0.1 min
+[10:28:37] Fuzzy scoring: 23250/34417, 3183.5 sources/s, 645437 pairs, ETA 0.1 min
+[10:28:38] Fuzzy scoring: 23500/34417, 3100.3 sources/s, 667118 pairs, ETA 0.1 min
+[10:28:38] Fuzzy scoring: 23750/34417, 2983.3 sources/s, 695414 pairs, ETA 0.1 min
+[10:28:38] Fuzzy scoring: 24000/34417, 2905.5 sources/s, 717753 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 24250/34417, 2846.4 sources/s, 738057 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 24500/34417, 2857.5 sources/s, 742419 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 24750/34417, 2869.1 sources/s, 746675 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 25000/34417, 2869.8 sources/s, 753831 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 25250/34417, 2872.3 sources/s, 760334 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 25500/34417, 2881.8 sources/s, 765118 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 25750/34417, 2879.7 sources/s, 773048 pairs, ETA 0.1 min
+[10:28:39] Fuzzy scoring: 26000/34417, 2877.7 sources/s, 780935 pairs, ETA 0.0 min
+[10:28:39] Fuzzy scoring: 26250/34417, 2875.8 sources/s, 788938 pairs, ETA 0.0 min
+[10:28:39] Fuzzy scoring: 26500/34417, 2882.5 sources/s, 794524 pairs, ETA 0.0 min
+[10:28:39] Fuzzy scoring: 26750/34417, 2891.3 sources/s, 799203 pairs, ETA 0.0 min
+[10:28:39] Fuzzy scoring: 27000/34417, 2892.3 sources/s, 806378 pairs, ETA 0.0 min
+[10:28:39] Fuzzy scoring: 27250/34417, 2895.5 sources/s, 813054 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 27500/34417, 2889.0 sources/s, 823411 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 27750/34417, 2874.3 sources/s, 836355 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 28000/34417, 2874.2 sources/s, 844381 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 28250/34417, 2889.5 sources/s, 847265 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 28500/34417, 2901.6 sources/s, 851229 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 28750/34417, 2901.2 sources/s, 859215 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 29000/34417, 2898.7 sources/s, 867162 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 29250/34417, 2897.7 sources/s, 875072 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 29500/34417, 2903.8 sources/s, 880326 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 29750/34417, 2911.4 sources/s, 885189 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 30000/34417, 2916.0 sources/s, 890773 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 30250/34417, 2925.1 sources/s, 895159 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 30500/34417, 2936.9 sources/s, 899028 pairs, ETA 0.0 min
+[10:28:40] Fuzzy scoring: 30750/34417, 2937.6 sources/s, 906513 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 31000/34417, 2939.0 sources/s, 913322 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 31250/34417, 2940.0 sources/s, 920383 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 31500/34417, 2924.4 sources/s, 932439 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 31750/34417, 2926.9 sources/s, 938938 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 32000/34417, 2931.6 sources/s, 944633 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 32250/34417, 2937.2 sources/s, 949813 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 32500/34417, 2940.4 sources/s, 955758 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 32750/34417, 2940.0 sources/s, 963183 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 33000/34417, 2931.1 sources/s, 974110 pairs, ETA 0.0 min
+[10:28:41] Fuzzy scoring: 33250/34417, 2934.1 sources/s, 980259 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring: 33500/34417, 2911.7 sources/s, 996081 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring: 33750/34417, 2912.8 sources/s, 1002837 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring: 34000/34417, 2914.3 sources/s, 1010507 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring: 34250/34417, 2895.5 sources/s, 1020672 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring: 34417/34417, 2858.8 sources/s, 1029459 pairs, ETA 0.0 min
+[10:28:42] Fuzzy scoring complete: 1029459 pairs, 61 mutual candidates (12.1s)
+[10:28:42] Round 3, fuzzy match: 59 matches
+[10:28:42] Candidate index: 34417 sources, 1029459 candidates, 29.9 average
+[10:28:42] Candidate paths: 34417 strong, 0 shape fallback, 0 large intersections
+[10:28:42] Candidate pruning: 115613 source functions skipped without cross-version evidence
+[10:28:42] Propagation anchors: 22948
+[10:28:42] Checkpoint saved: fuzzy_match (22878 matches)
+[10:28:44] Propagation signals=2, pass 1: scanned 18653 frontier functions, +158
+[10:28:44] Checkpoint saved: propagation_2_1 (23036 matches)
+[10:28:45] Propagation signals=2, pass 2: scanned 871 frontier functions, +13
+[10:28:45] Checkpoint saved: propagation_2_2 (23049 matches)
+[10:28:45] Propagation signals=2, pass 3: scanned 347 frontier functions, +2
+[10:28:45] Checkpoint saved: propagation_2_3 (23051 matches)
+[10:28:45] Propagation signals=2, pass 4: scanned 0 frontier functions, +0
+[10:28:45] Checkpoint saved: propagation_2_4 (23051 matches)
+[10:28:52] Propagation signals=1, pass 1: scanned 18749 frontier functions, +1341
+[10:28:52] Checkpoint saved: propagation_1_1 (24392 matches)
+[10:28:53] Propagation signals=1, pass 2: scanned 1098 frontier functions, +54
+[10:28:53] Checkpoint saved: propagation_1_2 (24446 matches)
+[10:28:53] Propagation signals=1, pass 3: scanned 488 frontier functions, +28
+[10:28:53] Checkpoint saved: propagation_1_3 (24474 matches)
+[10:28:53] Propagation signals=1, pass 4: scanned 64 frontier functions, +12
+[10:28:54] Checkpoint saved: propagation_1_4 (24486 matches)
+[10:28:54] Propagation signals=1, pass 5: scanned 51 frontier functions, +8
+[10:28:54] Checkpoint saved: propagation_1_5 (24494 matches)
+[10:28:54] Propagation signals=1, pass 6: scanned 7 frontier functions, +0
+[10:28:54] Checkpoint saved: propagation_1_6 (24494 matches)
+[10:28:55] Ordered C++ windows, pass 1: +4911
+[10:28:55] Checkpoint saved: ordered_windows_1 (29405 matches)
+[10:28:55] Ordered C++ windows, pass 2: +0
+[10:28:56] Checkpoint saved: ordered_windows_2 (29405 matches)
+[10:28:58] C++ class windows, pass 1: +851
+[10:28:59] Checkpoint saved: class_windows_1 (30256 matches)
+[10:29:00] C++ class windows, pass 2: +72
+[10:29:01] Checkpoint saved: class_windows_2 (30328 matches)
+[10:29:03] C++ class windows, pass 3: +3
+[10:29:03] Checkpoint saved: class_windows_3 (30331 matches)
+[10:29:05] C++ class windows, pass 4: +0
+[10:29:05] Checkpoint saved: class_windows_4 (30331 matches)
+[10:29:06] Match summary
+[10:29:06] Applied names: 7768
+[10:29:06] Existing-name anchors: 0
+[10:29:06] Exact hash: 160
+[10:29:06] String match: 98
+[10:29:06] Fuzzy match: 59
+[10:29:06] Call graph: 1615
+[10:29:06] Ordered C++ windows: 4910
+[10:29:06] C++ class windows: 926
+[10:29:06] Unmatched: 142518
+[10:29:06] Report: C:\Users\daniel\Desktop\v64.1\match.json (1.7 min)

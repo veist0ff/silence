@@ -1,0 +1,111 @@
+namespace HashCore.Laser.Logic.Battle
+{
+    using HashCore.Laser.Logic.Battle.Objects;
+    using HashCore.Laser.Logic.Battle.Structures;
+    using HashCore.Laser.Logic.Data;
+    using HashCore.Laser.Logic.Util;
+    using HashCore.Laser.Server;
+
+    /// <summary>
+    /// Бой с боссом (game_mode_variations: IsTypeOfBossFight — BossFight 10, TownCrush 18, MegaBoss 61).
+    /// Кооператив: одна команда (TeamCount 1) против босса. Босс — нейтральный персонаж
+    /// (индекс −16, без игрока-хозяина), управляется мозгом ботов. Клиент в хвосте кадра
+    /// читает процент здоровья босса (LogicGameObjectManagerClient::decode, ветка isTypeOfBossFight).
+    /// Победа — босс убит; поражение — вышло время (BattleTicks секунд).
+    /// </summary>
+    public partial class BattleMode
+    {
+        /// <summary>Босс из события (EventData.BossCharacterId); 0 — из game_mode_variations.</summary>
+        public int BossCharacterId;
+        private int m_bossObjectId = -1;
+        private int m_bossMaxSeen;
+
+        public bool IsBossFightMode => GameModeUtil.GetVariationData(m_gameModeVariation)?.IsTypeOfBossFight == true;
+
+        private Character GetBoss() =>
+            m_bossObjectId < 0 ? null : m_gameObjectManager.GetGameObjectByID(m_bossObjectId) as Character;
+
+        private CharacterData ResolveBossData()
+        {
+            CharacterData data = null;
+            if (BossCharacterId != 0) data = DataTables.Get(16).GetDataByGlobalId<CharacterData>(BossCharacterId);
+            if (data == null)
+            {
+                string name = GameModeUtil.GetVariationData(m_gameModeVariation)?.BossCharacterData;
+                if (!string.IsNullOrEmpty(name)) data = DataTables.Get(16).GetData<CharacterData>(name);
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Босс — игрок-бот второй команды, как в оригинале (LogicBattleModeServer::addPlayer).
+        /// Клиент заводит слот под него сам: без этого блоков игроков в кадре на один меньше,
+        /// кадр съезжает и клиент падает в LogicPlayer::setupNewHero. Вызывать до StartLoading.
+        /// </summary>
+        public void AddBossPlayer()
+        {
+            if (!IsBossFightMode) return;
+            CharacterData data = ResolveBossData();
+            if (data == null) { Logger.Warning($"[Boss] бой {Id}: босс не найден ({BossCharacterId})"); return; }
+            BattlePlayer boss = BattlePlayer.CreateBotInfo("BOSS", GetTeamPlayersCount(1), 1, data.GetGlobalId(), allowBoss: true);
+            boss.Bot = 2; // ИИ босса: бесконечные патроны, частые атаки (Character m_isBot == 2)
+            AddPlayer(boss, -1);
+            m_bossPlayer = boss;
+            foreach (BattlePlayer p in m_players)
+                Logger.Print($"[Boss] бой {Id}: игрок {p.PlayerIndex} команда {p.TeamIndex} бот {p.IsBot()} персонаж {p.CharacterId}");
+        }
+
+        private BattlePlayer m_bossPlayer;
+
+        private BattlePlayer BossPlayer => m_bossPlayer;
+
+        /// <summary>После общего спавна: босса — в центр карты.</summary>
+        private void SpawnBoss()
+        {
+            BattlePlayer bp = BossPlayer;
+            Character boss = bp == null ? null : m_gameObjectManager.GetGameObjectByID(bp.OwnObjectId) as Character;
+            if (boss == null) { Logger.Warning($"[Boss] бой {Id}: игрока-босса нет"); return; }
+            // Точки босса на карте — клетки «2» (у Mega_* их три), игроков — «1».
+            int x = m_tileMap.LogicWidth / 2, y = m_tileMap.LogicHeight / 2;
+            if (m_tileMap.SpawnPointsTeam2.Count > 0)
+            {
+                var t = m_tileMap.SpawnPointsTeam2[new System.Random().Next(m_tileMap.SpawnPointsTeam2.Count)];
+                x = t.X + 150; y = t.Y + 150;
+            }
+            boss.SetPosition(x, y, 0);
+            bp.SetSpawnPoint(x, y);
+            m_bossObjectId = boss.GetGlobalID();
+            Logger.Print($"[Boss] бой {Id}: босс {boss.CharacterData.Name} на точке босса");
+        }
+
+        /// <summary>Процент здоровья босса для хвоста кадра (Max127).</summary>
+        public int BossHitpointPercent()
+        {
+            Character boss = GetBoss();
+            if (boss == null || !boss.IsAlive()) return 0;
+            int p = boss.GetHitpointPercentage();
+            return p < 0 ? 0 : p > 100 ? 100 : p;
+        }
+
+        private bool? BossGameOver()
+        {
+            if (m_bossObjectId < 0) return null;
+            Character boss = GetBoss();
+            if (boss == null || !boss.IsAlive())
+            {
+                m_winnerTeam = 0;
+                Logger.Print($"[Boss] бой {Id}: босс побеждён");
+                return true;
+            }
+            int seconds = GameModeUtil.GetVariationData(m_gameModeVariation)?.BattleTicks ?? 300;
+            if (seconds <= 0) seconds = 300;
+            if (GetTicksGone() >= seconds * 20)
+            {
+                m_winnerTeam = 1;
+                Logger.Print($"[Boss] бой {Id}: время вышло, босс жив ({BossHitpointPercent()}%)");
+                return true;
+            }
+            return null;
+        }
+    }
+}

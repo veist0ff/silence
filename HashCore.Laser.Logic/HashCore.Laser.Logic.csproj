@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);0168;0169;0414;0162;0642;0219;0164;8600;8601;8602;8603;8604;8618;8625;2022;1050;1822</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AStarPathFinder" Version="1.0.0" />
+    <PackageReference Include="Masuda.Net" Version="6.0.13" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <!-- These are logic-facing contracts kept in Server/Listener for the requested layout. -->
+  <ItemGroup>
+    <Compile Include="..\HashCore.Laser.Titan\**\*.cs"
+             Exclude="..\HashCore.Laser.Titan\bin\**;..\HashCore.Laser.Titan\obj\**"
+             Link="Titan\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\HashCore.Laser.Server\Listener\**\*.cs" Link="Listener\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\HashCore.Laser.Server\Logger.cs" Link="Logger.cs" />
+  </ItemGroup>
+</Project>

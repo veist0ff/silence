@@ -1,0 +1,59 @@
+{
+    "slots": [
+        {
+            "slot": 1,
+            "location": 0,
+            "game_modes": [ "GemGrab" ]
+        },
+        {
+            "slot": 2,
+            "location": 0,
+            "game_modes": [ "Showdown" ]
+        },
+        {
+            "slot": 3,
+            "location": 0,
+            "game_modes": [ "Bounty" ]
+        },
+        {
+            "slot": 14,
+            "location": 0,
+            "game_modes": [ "CTF" ]
+        },
+        {
+            "slot": 34,
+            "location": 0,
+            "game_modes": [ "CTF" ]
+        },
+        {
+            "slot": 35,
+            "location": 0,
+            "game_modes": [ "CTF" ]
+        },
+        {
+            "slot": 38,
+            "location": 0,
+            "game_modes": [ "Heist" ]
+        },
+        {
+            "slot": 20,
+            "location": 0,
+            "game_modes": [ "Heist" ]
+        },
+        {
+            "slot": 2,
+            "location": 0,
+            "game_modes": [ "Roguelite" ]
+        },
+        {
+            "slot": 2,
+            "location": 0,
+            "game_modes": [ "MegaBoss" ]
+        },
+        {
+            "slot": 38,
+            "location": 0,
+            "game_modes": [ "Arena" ]
+        }
+    ]
+}

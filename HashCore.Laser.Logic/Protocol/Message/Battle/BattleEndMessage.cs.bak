@@ -1,0 +1,261 @@
+namespace PmdrKv64.Logic.Message.Battle
+{
+    using System.Collections.Generic;
+    using PmdrKv64.Logic.Battle.Structures;
+
+    public class BattleEndMessage : GameMessage
+    {
+        public BattleEndMessage() : base()
+        {
+        }
+
+        public int Result;
+        public int TokensReward = 10000;
+        public int TrophiesReward;
+        public List<BattlePlayer> Players;
+
+        public BattlePlayer OwnPlayer;
+        public bool StarToken;
+
+        public int GameMode;
+        public bool BattleWithoutTrophies;
+        public bool IsPvP;
+
+        public override void Encode()
+        {
+            // === Главная структура (sub_8738BC) ===
+            
+            Stream.WriteLong(OwnPlayer.AccountId); // a1 + 96
+            Stream.WriteLong(OwnPlayer.AccountId); // a1 + 104
+            
+            Stream.WriteVInt(GameMode);       // a1 + 112
+            Stream.WriteVInt(Result);         // a1 + 116
+            Stream.WriteVInt(TokensReward);   // a1 + 120
+            Stream.WriteVInt(TrophiesReward); // a1 + 124
+            Stream.WriteVInt(0); // Power Play Points / a1 + 128
+            Stream.WriteVInt(0); // Doubled Tokens / a1 + 132
+            Stream.WriteVInt(0); // Double Token Event / a1 + 136
+            Stream.WriteVInt(0); // Token Doubler Remaining / a1 + 140
+            Stream.WriteVInt(0); // Game Length / a1 + 144
+            Stream.WriteVInt(0); // Epic Win Points / a1 + 148
+            Stream.WriteVInt(0); // Championship Level / a1 + 152
+
+            // Опциональная структура sub_8DF30C
+            bool hasSub8DF30C = false;
+            Stream.WriteBoolean(hasSub8DF30C);
+            if (hasSub8DF30C)
+            {
+                // TODO: Encode sub_8DF30C
+            }
+
+            Stream.WriteVInt(0); // a1 + 156
+            Stream.WriteVInt(0); // a1 + 160
+            Stream.WriteBoolean(false); // a1 + 164
+            Stream.WriteBoolean(false); // a1 + 165
+            
+            Stream.WriteVInt(0); // a1 + 172
+            Stream.WriteVInt(0); // a1 + 176
+            Stream.WriteVInt(0); // a1 + 180
+            Stream.WriteVInt(0); // a1 + 184
+            Stream.WriteVInt(0); // a1 + 188
+            Stream.WriteVInt(0); // a1 + 192
+            Stream.WriteVInt(0); // a1 + 196
+            Stream.WriteVInt(0); // a1 + 200
+
+            Stream.WriteBoolean(false); // a1 + 209
+            Stream.WriteBoolean(false); // a1 + 210
+            Stream.WriteBoolean(false); // a1 + 211
+            Stream.WriteBoolean(false); // a1 + 212
+            Stream.WriteBoolean(false); // a1 + 213
+            Stream.WriteBoolean(false); // a1 + 214
+            
+            Stream.WriteVInt(0); // a1 + 216
+            Stream.WriteBoolean(false); // a1 + 220
+
+            // --- Массив 1: Игроки (sub_878394) ---
+            Stream.WriteVInt(Players.Count);
+            foreach (BattlePlayer player in Players)
+            {
+                // WriteByte/Boolean 3x
+                Stream.WriteBoolean(player.AccountId == OwnPlayer.AccountId); // Own player
+                Stream.WriteBoolean(player.TeamIndex != OwnPlayer.TeamIndex); // Is Enemy
+                Stream.WriteBoolean(false); // Star player
+
+                Stream.WriteVInt(1); // кол-во
+                ByteStreamHelper.WriteDataReference(Stream, player.CharacterId);
+                
+                Stream.WriteVInt(1); // кол-во
+                ByteStreamHelper.WriteDataReference(Stream, player.SkinId);
+                
+                Stream.WriteVInt(1); // кол-во
+                Stream.WriteVInt(player.Trophies);
+                
+                Stream.WriteVInt(1); // кол-во
+                Stream.WriteVInt(player.HeroPowerLevel);
+                
+                Stream.WriteVInt(1); // кол-во
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(0); // a1 + 16
+                Stream.WriteBoolean(player.IsBot() == 0); // флаг sub_8FF244
+                if (player.IsBot() == 0)
+                {
+                    player.DisplayData.Encode(Stream); // Если это sub_8FF244
+                    Stream.WriteVInt(0);
+                    ByteStreamHelper.WriteDataReference(Stream, 0);
+                }
+
+                Stream.WriteVInt(0); // a1 + 22
+                Stream.WriteVInt(0); // a1 + 23
+                Stream.WriteVInt((short)player.Kills); // Урон или киллы a1 + 24
+                Stream.WriteVInt(0); // a1 + 25
+                
+                ByteStreamHelper.WriteDataReference(Stream, 0); // a1 + 26
+                ByteStreamHelper.WriteDataReference(Stream, 0); // a1 + 27
+                
+                Stream.WriteVInt(player.Damage); // a1 + 28
+                Stream.WriteVInt(player.Heals); // a1 + 29
+            }
+
+            // --- Массив 2: sub_879620 ---
+            Stream.WriteVInt(0); 
+
+            // --- Массив 3: DataReferences ---
+            Stream.WriteVInt(0); 
+
+            // --- Массив 4: sub_89B8B0 ---
+            Stream.WriteVInt(0); 
+
+            // Продолжение главной структуры
+            ByteStreamHelper.WriteDataReference(Stream, 0); // a1 + 240
+            
+            bool hasSub877F90 = false;
+            Stream.WriteBoolean(hasSub877F90);
+            if (hasSub877F90)
+            {
+                // TODO: Encode sub_877F90
+            }
+
+            bool hasLogicQuests = false;
+            Stream.WriteBoolean(hasLogicQuests);
+            if (hasLogicQuests)
+            {
+                // TODO: LogicQuests.Encode()
+            }
+
+            Stream.WriteBoolean(false); // a1 + 256
+            Stream.WriteBoolean(false); // a1 + 257
+            Stream.WriteVInt(0); // a1 + 264
+            Stream.WriteVInt(0); // a1 + 268
+            Stream.WriteVInt(0); // a1 + 272
+
+            bool hasSub8E85A4 = false;
+            Stream.WriteBoolean(hasSub8E85A4);
+            if (hasSub8E85A4)
+            {
+                // TODO: Encode sub_8E85A4
+            }
+
+            Stream.WriteVInt(0); // a1 + 276
+
+            bool hasChronosTextEntry = false;
+            Stream.WriteBoolean(hasChronosTextEntry);
+            if (hasChronosTextEntry)
+            {
+                // TODO: ChronosTextEntry.Encode()
+            }
+
+            Stream.WriteVInt(0); // a1 + 204
+            Stream.WriteBoolean(false); // a1 + 208
+            Stream.WriteBoolean(false); // a1 + 284
+            Stream.WriteBoolean(false); // a1 + 285
+
+            bool hasSub8775E4 = false;
+            Stream.WriteBoolean(hasSub8775E4);
+            if (hasSub8775E4)
+            {
+                // TODO: Encode sub_8775E4
+            }
+
+            Stream.WriteBoolean(false); // a1 + 286
+            Stream.WriteVInt(0); // a1 + 288
+            Stream.WriteVInt(0); // a1 + 292
+            Stream.WriteVInt(0); // a1 + 296
+
+            // --- Массив 5 ---
+            Stream.WriteVInt(0); // Количество (a1 + 308)
+            // Здесь был бы цикл с Stream.WriteVInt(...)
+
+            Stream.WriteVInt(0); // a1 + 312
+            Stream.WriteVInt(0); // a1 + 316
+
+            bool isValueGreaterThanZero = false; // Флаг для (a1 + 320 >= 0)
+            Stream.WriteBoolean(isValueGreaterThanZero);
+            if (isValueGreaterThanZero)
+            {
+                Stream.WriteVInt(0); // a1 + 320
+                Stream.WriteVInt(0); // a1 + 324
+                Stream.WriteVInt(0); // a1 + 328
+                Stream.WriteVInt(0); // a1 + 332
+            }
+
+            // Зависит от флага структуры sub_8E85A4 выше
+            if (hasSub8E85A4)
+            {
+                Stream.WriteVInt(0); // a1 + 336
+                int val340 = 0;
+                Stream.WriteVInt(val340); // a1 + 340
+                if (val340 >= 1)
+                {
+                    Stream.WriteVInt(0); // a1 + 344
+                }
+            }
+
+            Stream.WriteBoolean(false); // a1 + 348
+            Stream.WriteVInt(0); // a1 + 352
+            Stream.WriteVInt(0); // a1 + 356
+            Stream.WriteVInt(0); // a1 + 360
+            Stream.WriteVInt(0); // a1 + 364
+            Stream.WriteVInt(0); // a1 + 368
+
+            bool hasLogicRewards1 = false;
+            Stream.WriteBoolean(hasLogicRewards1);
+            if (hasLogicRewards1)
+            {
+                // TODO: LogicRewards.Encode()
+            }
+
+            bool hasLogicRewards2 = false;
+            Stream.WriteBoolean(hasLogicRewards2);
+            if (hasLogicRewards2)
+            {
+                // TODO: LogicRewards.Encode()
+            }
+
+            Stream.WriteVInt(0); // a1 + 380
+            Stream.WriteBoolean(false); // a1 + 392
+            Stream.WriteVInt(0); // a1 + 384
+            ByteStreamHelper.WriteDataReference(Stream, 0); // a1 + 388
+
+            bool hasSub8AC188 = false;
+            Stream.WriteBoolean(hasSub8AC188);
+            if (hasSub8AC188)
+            {
+                // TODO: Encode sub_8AC188
+            }
+
+            Stream.WriteVInt(0); // a1 + 396
+            Stream.WriteVInt(0); // a1 + 400
+        }
+
+        public override int GetMessageType()
+        {
+            return 23456; // Или твой реальный ID (обычно 23456)
+        }
+
+        public override int GetServiceNodeType()
+        {
+            return 27;
+        }
+    }
+}

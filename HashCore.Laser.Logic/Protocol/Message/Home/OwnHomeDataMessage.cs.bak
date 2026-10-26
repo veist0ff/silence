@@ -1,0 +1,101 @@
+namespace PmdrKv64.Logic.Message.Home
+{
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using PmdrKv64.Logic.Avatar;
+    using PmdrKv64.Logic.Home;
+
+    public class OwnHomeDataMessage : GameMessage
+    {
+        public OwnHomeDataMessage() : base()
+        {
+        }
+
+        public ClientHome Home;
+        public ClientAvatar Avatar;
+
+        public override void Encode()
+        {
+            // Считываем дамп из нового файла 1.txt
+            string hex = File.ReadAllText("1.txt").Trim();
+            byte[] payload = StringToByteArray(hex);
+
+            // 1. Патчим гемы: меняем -4282 (C6 3D) на 999999 (BF 88 7A)
+            byte[] oldGems = new byte[] { 0xC6, 0x3D };
+            byte[] newGems = new byte[] { 0xBF, 0x88, 0x7A };
+            payload = ReplaceBytes(payload, oldGems, newGems);
+
+            // 2. Патчим имя: меняем "FidBon" на "V66   "
+            // FidBon = 46 69 64 42 6F 6E
+            // V66    = 56 36 36 20 20 20
+            byte[] oldName = new byte[] { 0x46, 0x69, 0x64, 0x42, 0x6F, 0x6E };
+            byte[] newName = new byte[] { 0x56, 0x36, 0x36, 0x20, 0x20, 0x20 };
+            payload = ReplaceBytes(payload, oldName, newName);
+
+            // 3. Патчим фон лобби: меняем 41000163 на 41000164
+            // Записано как DataReference: Class (41 -> 0x29) и Instance (163 -> 0xA3 0x02 / 164 -> 0xA4 0x02)
+                        // 3. Патчим фон лобби (Вариант 2: цельный VInt)
+            // 41000163 = A3 F3 8C 27
+            // 41000164 = A4 F3 8C 27
+            byte[] oldBg = new byte[] { 0xA3, 0xF3, 0x8C, 0x27 };
+            byte[] newBg = new byte[] { 0xA4, 0xF3, 0x8C, 0x27 };
+            payload = ReplaceBytes(payload, oldBg, newBg);
+
+
+            // Пишем пропатченный массив байтов в поток без префикса длины
+            Stream.WriteBytesWithoutLength(payload, payload.Length);
+        }
+
+        // Универсальный метод для замены байтов "на лету" (поддерживает изменение длины)
+        private byte[] ReplaceBytes(byte[] source, byte[] search, byte[] replace)
+        {
+            List<byte> result = new List<byte>();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i <= source.Length - search.Length)
+                {
+                    bool match = true;
+                    for (int j = 0; j < search.Length; j++)
+                    {
+                        if (source[i + j] != search[j])
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+                    
+                    if (match)
+                    {
+                        result.AddRange(replace);
+                        i += search.Length - 1; // Пропускаем старые байты
+                        continue;
+                    }
+                }
+                result.Add(source[i]);
+            }
+            return result.ToArray();
+        }
+
+        private static byte[] StringToByteArray(string hex)
+        {
+            if (hex.Length % 2 != 0) throw new ArgumentException("OddHexLength");
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < hex.Length; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            }
+            return bytes;
+        }
+
+        public override int GetMessageType()
+        {
+            return 24101;
+        }
+
+        public override int GetServiceNodeType()
+        {
+            return 9;
+        }
+    }
+}

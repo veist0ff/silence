@@ -1,0 +1,776 @@
+namespace HashCore.Laser.Server.Logic.Game
+{
+    using HashCore.Laser.Logic.Data;
+    using HashCore.Laser.Logic.Home;
+    using HashCore.Laser.Logic.Home.Items;
+    using HashCore.Laser.Logic.Home.Challenges;
+    using HashCore.Laser.Server.Database;
+    using HashCore.Laser.Titan;
+    using HashCore.Laser.Titan.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+using System.Threading;
+
+    public static class Events
+    {
+        public const int REFRESH_MINUTES = 6 * 60; // Из v29: Обновление раз в 6 часов
+
+        /// <summary>
+        /// Идентификатор коллаба из collabs.csv. 13 — Stranger Things.
+        /// Стояло 9 (DemonsOneSide), а клиент в CollabUtil::isActiveEventDemonic
+        /// считает демоническими именно 5 и 9 и в этом случае берёт тему стороны
+        /// из коллаб-данных. Данные пустые — тема падала на дефолтную, и фон в меню
+        /// сбрасывался, как только появлялись данные игрока по коллабу.
+        /// </summary>
+        /// Берётся из gameplay.json ("collab_id"), по умолчанию 13. 11 — Brawloween2025.
+        public static readonly int COLLAB_ID = ReadCollabId();
+
+        private static int ReadCollabId()
+        {
+            try
+            {
+                var o = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText("Json/gameplay.json"));
+                return (int?)o["collab_id"] ?? 13;
+            }
+            catch { return 13; }
+        }
+
+        private static readonly ChronosFileEntry DefaultCollabFile = new(
+            "bfc56098d091df99a19ab61fdfed79e8dfa61def",
+            "e35236f1-562d-4f46-b86f-a17dc57f8f1e_collab_stranger_things_roguelite.sc");
+
+        private static Timer RefreshTimer;
+        private static EventSlotConfig[] ConfigSlots;
+        
+        private static Dictionary<int, EventData> Slots;
+        public static Dictionary<int, int> SlotsLocations;
+        public static List<int> Locations;
+
+        // Трекинг сбора жетонов (как в v29)
+        private static Dictionary<int, List<long>> SlotsCollected = new();
+        private static Dictionary<int, List<long>> SlotsPlayed = new();
+
+        private static readonly object SlotsLock = new object();
+        private static readonly object SlotsCollectedLock = new object();
+        private static readonly object SlotsPlayedLock = new object();
+
+        public static void Init()
+        {
+            LoadSettings();
+            Slots = new Dictionary<int, EventData>();
+            SlotsLocations = new Dictionary<int, int>();
+            Locations = new List<int>();
+
+            GenerateEventsInf();
+
+            RefreshTimer = new Timer(new TimerCallback(RefreshTimerElapsed), null, REFRESH_MINUTES * 60 * 1000, REFRESH_MINUTES * 60 * 1000);
+        }
+
+        private static void GenerateEventsInf()
+        {
+            bool generated = false;
+            while (!generated)
+            {
+                try
+                {
+                    GenerateEvents();
+                    generated = true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка при генерации ивентов: {e}");
+                }
+            }
+        }
+
+        private static void GenerateEvents()
+{
+    lock (SlotsLock)
+    {
+        Slots.Clear();
+        SlotsLocations.Clear();
+        Locations.Clear();
+
+        lock (SlotsCollectedLock) SlotsCollected.Clear();
+        lock (SlotsPlayedLock) SlotsPlayed.Clear();
+
+        for (int i = 0; i < ConfigSlots.Length; i++)
+        {
+            var config = ConfigSlots[i];
+            // Slot 36 is a mapless hub, created once below, not a map rotation.
+            if (config.Slot == EventData.COLLAB_EVENT_SLOT) continue;
+            EventData ev = GenerateEvent(config.AllowedModes, config.Slot, config.location);
+            
+            if (ev != null)
+            {
+                ev.ChronosFileEntry = config.ChronosFileEntry;
+                // Попап этапов открывается только для 53/54 (showForEventSlot режет
+                // остальное), но панель рогалика внутри хаба коллаба читает блок из
+                // своего события. Поэтому блок кладём и на слот коллаба тоже —
+                // режим слота при этом не трогаем.
+                if ((config.Slot >= EventData.ROGUELITE_FIRST_SLOT
+                  && config.Slot <= EventData.ROGUELITE_LAST_SLOT)
+                 || config.Slot == EventData.SPECIAL_EVENT_SLOT)
+                {
+                    ev.Roguelite = BuildRoguelite();
+                }
+
+                if (config.Slot >= EventData.BOSS_RUSH_FIRST_SLOT
+                 && config.Slot <= EventData.BOSS_RUSH_LAST_SLOT)
+                {
+                    // Слоту боссов нужна ссылка на босса, иначе клиент выкидывает событие.
+                    ev.BossCharacterId = config.BossCharacterId != 0 ? config.BossCharacterId : 16000133; // RaidBoss
+                }
+
+                if (config.Slot == EventData.SPECIAL_RUSH_EVENT_SLOT)
+                {
+                    // Без этой структуры клиент выбрасывает событие слота 44 и
+                    // Special Rush в списке не появляется вообще.
+                    ev.SpecialRush = new SpecialRushEvent();
+                }
+
+                if (config.Slot == 40)
+                {
+                    ev.BrawlerEarlyAccess = BrawlerEarlyAccessEventData.BuildGigi();
+                    // The client rejects Early Access when the enclosing start timestamp is zero.
+                    ev.Unk8 = -60; // +8 — начало относительно входа (как +16 — конец). Unix-время клиент считал будущим: BrawlerUtil::getValidActiveOrFutureEarlyAccessEvent отбрасывал ивент, и Старр-роуд не показывал ранний доступ
+                    Console.WriteLine($"[EarlyAccess] Gigi slot 40: location={ev.LocationId}, start={ev.Unk8}");
+                }
+                Slots.Add(config.Slot, ev);
+                
+                // Безопасное добавление локаций
+                if (!SlotsLocations.ContainsKey(ev.LocationId))
+                    SlotsLocations.Add(ev.LocationId, config.Slot);
+                    
+                if (!Locations.Contains(ev.LocationId))
+                    Locations.Add(ev.LocationId);
+
+                // Безопасное создание списков для жетонов (защита от краша Key: 2)
+                lock (SlotsCollectedLock) 
+                {
+                    if (!SlotsCollected.ContainsKey(config.Slot))
+                        SlotsCollected[config.Slot] = new List<long>();
+                }
+                
+                lock (SlotsPlayedLock) 
+                {
+                    if (!SlotsPlayed.ContainsKey(config.Slot))
+                        SlotsPlayed[config.Slot] = new List<long>();
+                }
+            }
+        }
+
+        /// Скины коллаба Stranger Things. Список взят из StrangerCollabSkinAlbum
+        /// (skin_albums.csv, тип Collab, привязка Collabs=Stranger), номера разрешены
+        /// по skins.csv. Прежнее предложение ссылалось на строку 1353 — это
+        /// RangedBotSamurai, посторонний скин, поэтому карточка и была пустой.
+        // Хаб коллаба (ОСД) — только если слот 36 есть в gameplay.json (выключение ивента — убрать слот).
+        if (ConfigSlots.Any(c => c.Slot == EventData.COLLAB_EVENT_SLOT))
+        Slots[EventData.COLLAB_EVENT_SLOT] = new EventData
+        {
+            Slot = EventData.COLLAB_EVENT_SLOT,
+            LocationId = 0,
+            EndTime = DateTime.Now.AddDays(30),
+            CollabId = COLLAB_ID,
+            ChronosFileEntry = ConfigSlots.FirstOrDefault(c => c.Slot == EventData.COLLAB_EVENT_SLOT)?.ChronosFileEntry
+                ?? DefaultCollabFile
+            // Roguelite belongs to slots 53/54, not the Collab hub (36).
+            // Do not publish guessed stages without an authoritative run configuration.
+        };
+
+        if (Slots.TryGetValue(EventData.SPECIAL_EVENT_SLOT, out EventData special))
+            special.CollabId = COLLAB_ID;
+        // Рогалик на 53 работает как слот 38: привязан к коллабу (валюта, хаб, панель забега).
+        if (Slots.TryGetValue(EventData.ROGUELITE_FIRST_SLOT, out EventData rogueSlot))
+            rogueSlot.CollabId = COLLAB_ID;
+
+        GenerateChallengeEvents();
+
+
+        // Привязка слот -> .sc. Клиент гейтит каждое событие по его собственному полю,
+        // поэтому здесь должно быть ровно по одному файлу на слот и без чужих.
+        foreach (var kv in Slots.OrderBy(k => k.Key))
+        {
+            EventData e = kv.Value;
+            string mode = e.Location?.GameModeVariation ?? "нет локации";
+            Console.WriteLine($"[Slot] {kv.Key}: loc={e.LocationId} mode={mode}"
+                + $" roguelite={(e.Roguelite != null ? e.Roguelite.Stages.Count + " этапов" : "нет")}"
+                + $" collabId={e.CollabId} boss={e.BossCharacterId}"
+                + $" rush={(e.SpecialRush != null ? "да" : "нет")}"
+                + $" chronos={(e.ChronosFileEntry?.Filename ?? "нет")}");
+
+            if (e.Roguelite == null) continue;
+
+            // Самопроверка блока: кодируем событие тем же энкодером, что уходит
+            // клиенту, и тут же читаем обратно зеркальным декодером. Если поток
+            // сойдётся байт в байт и рогалик прочитается с теми же этапами —
+            // значит структура на проводе корректна, и искать надо в клиенте.
+            try
+            {
+                ByteStream probe = new ByteStream(4096);
+                e.EncodeCanonical(probe);
+                int written = probe.GetOffset();
+                byte[] raw = probe.GetByteArray();
+
+                ByteStream back = new ByteStream(raw, written);
+                EventData copy = new EventData();
+                copy.DecodeCanonical(back);
+
+                string tail = string.Join(" ", raw.Skip(Math.Max(0, written - 24)).Take(24).Select(b => b.ToString("x2")));
+                Console.WriteLine($"[Probe] слот {kv.Key}: записано {written} б, прочитано {back.GetOffset()} б"
+                    + $", этапов после разбора {(copy.Roguelite?.Stages.Count ?? -1)}"
+                    + $", хвост {tail}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Probe] слот {kv.Key}: разбор упал — {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+    }
+}
+
+        /// <summary>
+        /// Этапы испытания — события в слотах 20..29 (см. ChallengeDefinition).
+        /// Каждый этап несёт ссылку на общую описанку испытания и тот же файл
+        /// chronos: клиент берёт логотип и шапку из события слота 20.
+        /// </summary>
+        private static void GenerateChallengeEvents()
+        {
+            ChallengeDefinition def = ChallengeDefinition.Current;
+            if (def == null) return;
+
+            foreach (ChallengeStage stage in def.Stages)
+            {
+                EventData ev = GenerateEvent(stage.GameModes, stage.Slot, stage.Location);
+                if (ev == null) continue;
+
+                ev.Challenge = def;
+                ev.ChronosFileEntry = def.ChronosFile;
+                if (def.EndTime.HasValue) ev.EndTime = def.EndTime.Value.ToLocalTime();
+
+                Slots[stage.Slot] = ev;
+                if (!SlotsLocations.ContainsKey(ev.LocationId)) SlotsLocations.Add(ev.LocationId, stage.Slot);
+                if (!Locations.Contains(ev.LocationId)) Locations.Add(ev.LocationId);
+                lock (SlotsCollectedLock)
+                    if (!SlotsCollected.ContainsKey(stage.Slot)) SlotsCollected[stage.Slot] = new List<long>();
+                lock (SlotsPlayedLock)
+                    if (!SlotsPlayed.ContainsKey(stage.Slot)) SlotsPlayed[stage.Slot] = new List<long>();
+
+                Console.WriteLine($"[Challenge] слот {stage.Slot}: loc={ev.LocationId} побед {stage.Wins}");
+            }
+        }
+
+        /// <summary>
+        /// Блок "challenge" из gameplay.json. Пример:
+        ///
+        ///   "challenge": {
+        ///     "key": "ultra_1", "challenge_id": 7, "chronos_file": "challenge_ultra",
+        ///     "max_lives": 3, "lives_per_purchase": 1, "lives_prices": [30, 60],
+        ///     "infinite_lives": false, "end_utc": "2026-10-01T00:00:00Z",
+        ///     "stages": [ { "slot": 20, "game_modes": ["GemGrab"], "wins": 2 } ],
+        ///     "win_rewards": [ { "win": 1, "type": "Coin", "count": 100 } ],
+        ///     "completion_reward": { "type": "Skin", "skin": 123 }
+        ///   }
+        ///
+        /// Нет блока или "enabled": false — испытания нет. Сменил "key" — прогресс
+        /// всех игроков начинается заново.
+        /// </summary>
+        private static void ParseChallenge(LogicJSONObject settings)
+        {
+            ChallengeDefinition.Current = null;
+            LogicJSONObject c = settings.GetJSONObject("challenge");
+            if (c == null) return;
+            if (c.GetJSONBoolean("enabled") != null && !c.GetJSONBoolean("enabled").IsTrue()) return;
+
+            ChallengeDefinition def = new ChallengeDefinition();
+            def.Key = c.GetJSONString("key")?.GetStringValue() ?? "challenge";
+            def.ChallengeId = c.GetJSONNumber("challenge_id")?.GetIntValue() ?? 7;
+            def.MaxLives = c.GetJSONNumber("max_lives")?.GetIntValue() ?? 3;
+            def.LivesPerPurchase = c.GetJSONNumber("lives_per_purchase")?.GetIntValue() ?? 1;
+            def.InfiniteLives = c.GetJSONBoolean("infinite_lives")?.IsTrue() ?? false;
+
+            string end = c.GetJSONString("end_utc")?.GetStringValue();
+            if (!string.IsNullOrWhiteSpace(end))
+                def.EndTime = DateTime.Parse(end, null,
+                    System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal);
+
+            string file = c.GetJSONString("chronos_file")?.GetStringValue();
+            if (!string.IsNullOrWhiteSpace(file))
+            {
+                LogicJSONObject entry = settings.GetJSONObject("chronos_files")?.GetJSONObject(file);
+                if (entry == null) throw new InvalidDataException($"challenge: unknown chronos_files entry '{file}'.");
+                def.ChronosFile = new ChronosFileEntry(entry.GetJSONString("hash")?.GetStringValue(),
+                    entry.GetJSONString("filename")?.GetStringValue());
+            }
+
+            LogicJSONArray prices = c.GetJSONArray("lives_prices");
+            for (int i = 0; prices != null && i < prices.Size(); i++)
+                def.LivesPrices.Add(prices.GetJSONNumber(i).GetIntValue());
+
+            LogicJSONArray stages = c.GetJSONArray("stages");
+            for (int i = 0; stages != null && i < stages.Size(); i++)
+            {
+                LogicJSONObject st = stages.GetJSONObject(i);
+                ChallengeStage stage = new ChallengeStage
+                {
+                    Slot = st.GetJSONNumber("slot")?.GetIntValue() ?? ChallengeDefinition.FIRST_SLOT + i,
+                    Location = st.GetJSONNumber("location")?.GetIntValue() ?? 0,
+                    Wins = st.GetJSONNumber("wins")?.GetIntValue() ?? 1
+                };
+                if (!ChallengeDefinition.IsChallengeSlot(stage.Slot))
+                    throw new InvalidDataException($"challenge: stage slot {stage.Slot} is outside 20..29.");
+
+                LogicJSONArray modes = st.GetJSONArray("game_modes");
+                List<string> list = new List<string>();
+                for (int j = 0; modes != null && j < modes.Size(); j++) list.Add(modes.GetJSONString(j).GetStringValue());
+                stage.GameModes = list.ToArray();
+                def.Stages.Add(stage);
+            }
+            if (def.Stages.Count == 0 || def.Stages[0].Slot != ChallengeDefinition.FIRST_SLOT)
+                throw new InvalidDataException("challenge: the first stage must be slot 20, the client reads the whole challenge from it.");
+
+            LogicJSONArray wins = c.GetJSONArray("win_rewards");
+            for (int i = 0; wins != null && i < wins.Size(); i++)
+            {
+                LogicJSONObject w = wins.GetJSONObject(i);
+                def.WinRewards.Add(new ChallengeWinReward
+                {
+                    Win = w.GetJSONNumber("win")?.GetIntValue() ?? i + 1,
+                    Offer = ParseOffer(w)
+                });
+            }
+
+            LogicJSONObject completion = c.GetJSONObject("completion_reward");
+            if (completion != null) def.CompletionReward = ParseOffer(completion);
+
+            ChallengeDefinition.Current = def;
+            Console.WriteLine($"[Challenge] {def.Key}: id {def.ChallengeId}, этапов {def.Stages.Count}, "
+                + $"побед {def.TotalWins}, жизней {def.MaxLives}, файл {def.ChronosFile?.Filename ?? "нет"}");
+        }
+
+        /// <summary>{ "type": 1 или "Coin", "count": 100, "item": глобальный id, "skin": номер строки skins.csv }</summary>
+        private static LogicGemOffer ParseOffer(LogicJSONObject o)
+        {
+            ShopItem type;
+            if (o.Get("type") is LogicJSONNumber number) type = (ShopItem)number.GetIntValue();
+            else if (!Enum.TryParse(o.GetJSONString("type")?.GetStringValue(), true, out type))
+                throw new InvalidDataException($"challenge: unknown offer type '{o.GetJSONString("type")?.GetStringValue()}'.");
+
+            return new LogicGemOffer(type,
+                o.GetJSONNumber("count")?.GetIntValue() ?? 1,
+                o.GetJSONNumber("item")?.GetIntValue() ?? 0,
+                o.GetJSONNumber("skin")?.GetIntValue() ?? 0);
+        }
+
+        private static void RefreshTimerElapsed(object s)
+        {
+            GenerateEventsInf();
+
+        }
+
+        /// <summary>
+        /// Наполнение рогалика. Этапы обязаны нести реальную локацию в поле +0
+        /// (findLocationData читает именно её, а не ссылку в +32), а первая награда
+        /// этапа должна быть типа CollabEventCurrency: клиент в setUpStageRewardClip
+        /// на любой другой тип пишет "Unhandled reward type".
+        /// </summary>
+        private static readonly int[] RogueliteLocations = { 15001133, 15001134, 15001135 };
+
+        /// <summary>Этапов в забеге. В разметке события их пять, карты идут по кругу.</summary>
+        private const int ROGUELITE_STAGE_COUNT = 5;
+
+        /// <summary>
+        /// Награды за место в бою, индекс = место из m_stageRanks. Мест в режиме
+        /// десять, поэтому записей одиннадцать: нулевая на случай нулевого места.
+        /// Тип обязан быть 76, иначе экран прячет блок бонуса.
+        /// </summary>
+        private static readonly int[] RogueliteRankRewards = { 0, 100, 80, 60, 50, 40, 30, 25, 20, 15, 10 };
+
+        private static RogueliteEvent BuildRoguelite()
+        {
+            RogueliteEvent ev = new RogueliteEvent { CollabId = COLLAB_ID };
+
+            foreach (int amount in RogueliteRankRewards)
+                ev.ExtraRewardsForRankInBattle.Add(
+                    RogueliteEvent.Offer(ShopItem.CollabEventCurrency, amount));
+
+            for (int i = 0; i < ROGUELITE_STAGE_COUNT; i++)
+            {
+                RogueliteEventStage stage = new RogueliteEventStage
+                {
+                    LocationGlobalId = RogueliteLocations[i % RogueliteLocations.Length],
+                    Unk48 = i
+                };
+                stage.Rewards.Add(RogueliteEvent.Offer(ShopItem.CollabEventCurrency, 25 * (i + 1)));
+                ev.Stages.Add(stage);
+            }
+            return ev;
+        }
+
+        // Списки treatUpgradeBoxRewards / treatUpgradeCosts внутри LogicCollabEvent
+        // относятся к Brawloween (trick-or-treat): имена сняты прямо со строк
+        // Debugger::fatal в LogicCollabEvent::decode. Витрина Stranger собирается
+        // не здесь, а обычными предложениями с контекстом 7 — см.
+        // ClientHome.GenerateCollabCardPacks.
+
+        private static EventData GenerateEvent(string[] gameModes, int slot, int presetlocation)
+        {
+            if (slot == 40)
+            {
+                // The collab mode is not a Location row. Resolve an actual enabled
+                // Showdown location from the configured rotation instead.
+                gameModes = new[] { "Showdown" };
+            }
+            // Если есть предустановленная локация
+            if (presetlocation != 0)
+            {
+                LocationData presetLoc = DataTables.Get(DataType.Location).GetDataWithId<LocationData>(presetlocation);
+                if (presetLoc != null && (slot != 40 ||
+                    (!presetLoc.Disabled && presetLoc.GameModeVariation == "Showdown")))
+                {
+                    return new EventData
+                    {
+                        EndTime = DateTime.Now.AddMinutes(REFRESH_MINUTES),
+                        LocationId = presetLoc.GetGlobalId(),
+                        Slot = slot
+                    };
+                }
+            }
+
+            // Ротация карт и режимов. Раньше здесь была тысяча случайных тычков по всей
+            // таблице локаций: для режима с тремя картами из полутора тысяч строк это
+            // примерно один шанс из девяти вообще ничего не найти и отдать null —
+            // слот тогда молча пропадал. Собираем подходящие карты списком и тянем из него.
+            var locations = DataTables.Get(DataType.Location);
+            List<LocationData> candidates = new List<LocationData>();
+
+            for (int i = 0; i < locations.Count; i++)
+            {
+                LocationData location = locations.GetDataWithId<LocationData>(i);
+                if (location == null || location.Disabled) continue;
+                if (!gameModes.Contains(location.GameModeVariation)) continue;
+                candidates.Add(location);
+            }
+
+            if (candidates.Count == 0)
+            {
+                Console.WriteLine($"[Slot] {slot}: нет ни одной карты под режимы "
+                    + string.Join("/", gameModes));
+                return null;
+            }
+
+            LocationData picked = candidates[new Random().Next(candidates.Count)];
+
+            return new EventData
+            {
+                EndTime = DateTime.Now.AddMinutes(REFRESH_MINUTES),
+                LocationId = picked.GetGlobalId(),
+                Slot = slot
+            };
+        }
+
+        private static void LoadSettings()
+        {
+            LogicJSONObject settings = LogicJSONParser.ParseObject(File.ReadAllText("Json/gameplay.json"));
+            ConfigSlots = ParseSettings(settings);
+            ParseChallenge(settings);
+        }
+
+        /// <summary>
+        /// Файлы мега-квестов. Клиент ищет их не в событии, а по имени строки в
+        /// chronos_asset_ids.csv: QuestUtil::getScFilenameForMegaQuestChainSlotImpl
+        /// собирает "MegaQuestSlot%dSC", берёт строку из таблицы 98 и спрашивает у
+        /// ChronosResourceHelper скачанный ассет. Номера цепочек только 1..4 —
+        /// всё остальное функция отбрасывает сразу.
+        /// </summary>
+        public static readonly Dictionary<int, ChronosFileEntry> MegaQuestSlots = new Dictionary<int, ChronosFileEntry>();
+
+        /// <summary>Строка MegaQuestSlot1SC в chronos_asset_ids.csv, класс таблицы 98.</summary>
+        public const int MEGA_QUEST_ASSET_CLASS = 98;
+        public const int MEGA_QUEST_FIRST_ROW = 9;
+        public const int MEGA_QUEST_MAX_SLOT = 4;
+
+        private static void ParseMegaQuestSlots(LogicJSONObject settings, LogicJSONObject catalog)
+        {
+            MegaQuestSlots.Clear();
+
+            LogicJSONObject mega = settings.GetJSONObject("mega_quest_slots");
+            if (mega == null) return;
+
+            for (int slot = 1; slot <= MEGA_QUEST_MAX_SLOT; slot++)
+            {
+                string key = slot.ToString();
+                if (mega.Get(key) == null) continue;
+
+                string name = mega.GetJSONString(key)?.GetStringValue();
+                LogicJSONObject entry = catalog?.GetJSONObject(name ?? string.Empty);
+                if (entry == null)
+                    throw new InvalidDataException($"mega_quest_slots[{key}]: нет записи '{name}' в chronos_files.");
+
+                string hash = entry.GetJSONString("hash")?.GetStringValue();
+                string filename = entry.GetJSONString("filename")?.GetStringValue();
+                if (string.IsNullOrWhiteSpace(hash) || string.IsNullOrWhiteSpace(filename))
+                    throw new InvalidDataException($"mega_quest_slots[{key}]: у '{name}' пустой хеш или имя файла.");
+
+                MegaQuestSlots[slot] = new ChronosFileEntry(hash, filename);
+                Console.WriteLine($"[MegaQuest] цепочка {slot}: {filename}");
+            }
+        }
+
+        private static EventSlotConfig[] ParseSettings(LogicJSONObject settings)
+        {
+            LogicJSONArray slots = settings.GetJSONArray("slots");
+            var configs = new EventSlotConfig[slots.Size()];
+            var slotIds = new HashSet<int>();
+            var files = new Dictionary<string, string>(StringComparer.Ordinal);
+            var catalog = settings.GetJSONObject("chronos_files");
+
+            ParseMegaQuestSlots(settings, catalog);
+
+            for (int i = 0; i < slots.Size(); i++)
+            {
+                EventSlotConfig config = new EventSlotConfig();
+                LogicJSONObject slot = slots.GetJSONObject(i);
+                config.Slot = slot.GetJSONNumber("slot").GetIntValue();
+                if (!slotIds.Add(config.Slot))
+                    throw new InvalidDataException($"Duplicate event slot {config.Slot}.");
+
+                if (slot.Get("chronos_file") != null || slot.Get("chronos_file_entry") != null)
+                {
+                    if (slot.Get("chronos_file") != null && slot.Get("chronos_file_entry") != null)
+                        throw new InvalidDataException($"Slot {config.Slot}: use either chronos_file or chronos_file_entry.");
+                    var file = slot.GetJSONObject("chronos_file_entry");
+                    if (slot.Get("chronos_file") != null)
+                    {
+                        var name = slot.GetJSONString("chronos_file")?.GetStringValue();
+                        if (string.IsNullOrWhiteSpace(name))
+                            throw new InvalidDataException($"Slot {config.Slot}: chronos_file must be a nonempty catalog name.");
+                        file = catalog?.GetJSONObject(name);
+                        if (file == null)
+                            throw new InvalidDataException($"Slot {config.Slot}: unknown chronos_files entry '{name}'.");
+                    }
+                    var hash = file?.GetJSONString("hash")?.GetStringValue();
+                    var filename = file?.GetJSONString("filename")?.GetStringValue();
+
+                    bool hashEmpty = string.IsNullOrWhiteSpace(hash);
+                    bool nameEmpty = string.IsNullOrWhiteSpace(filename);
+
+                    // Пустая заготовка — это «файла пока нет», а не ошибка: поле можно
+                    // держать в конфиге у всех слотов, которые умеют нести .sc, и заполнять
+                    // по мере надобности. А вот заполнить только половину — уже опечатка.
+                    if (hashEmpty && nameEmpty && slot.Get("chronos_file") == null)
+                    {
+                        // оставляем слот без файла
+                    }
+                    else
+                    {
+                        if (hashEmpty || nameEmpty)
+                            throw new InvalidDataException(
+                                $"Slot {config.Slot}: chronos_file_entry заполнен наполовину — "
+                                + "нужны и hash, и filename (или оставь оба пустыми).");
+
+                        try { config.ChronosFileEntry = new ChronosFileEntry(hash, filename); }
+                        catch (ArgumentException e)
+                        { throw new InvalidDataException($"Invalid chronos_file_entry for slot {config.Slot}: {e.Message}", e); }
+                        if (config.Slot == 14)
+                            throw new InvalidDataException("chronos_file_entry is unsupported by the legacy ranked encoder (slot 14).");
+                    }
+                }
+
+                // Массив chronos_files у слота: несколько .sc на один слот.
+                LogicJSONArray extraFiles = slot.GetJSONArray("chronos_files");
+                if (extraFiles != null)
+                {
+                    if (config.Slot == 14)
+                        throw new InvalidDataException("chronos_files is unsupported by the legacy ranked encoder (slot 14).");
+                    // Строго один файл на слот. Клиент гейтит событие по ЕГО СОБСТВЕННОМУ
+                    // полю +136 (SelectLocationPopup::isEventEnabled), а событий на слот
+                    // ровно одно — значит второй файл пришлось бы везти отдельной записью
+                    // с тем же номером слота, и слот подхватил бы чужой файл.
+                    if (extraFiles.Size() > 1)
+                        throw new InvalidDataException(
+                            $"Slot {config.Slot}: chronos_files must contain exactly one file — "
+                            + "в протоколе у события ровно одно поле chronos, и слот должен нести только свой файл.");
+
+                    for (int j = 0; j < extraFiles.Size(); j++)
+                    {
+                        string name = extraFiles.GetJSONString(j)?.GetStringValue();
+                        if (string.IsNullOrWhiteSpace(name))
+                            throw new InvalidDataException($"Slot {config.Slot}: chronos_files[{j}] must be a nonempty catalog name.");
+                        LogicJSONObject entry = catalog?.GetJSONObject(name);
+                        if (entry == null)
+                            throw new InvalidDataException($"Slot {config.Slot}: unknown chronos_files entry '{name}'.");
+                        ChronosFileEntry parsed;
+                        try
+                        {
+                            parsed = new ChronosFileEntry(entry.GetJSONString("hash")?.GetStringValue(),
+                                                          entry.GetJSONString("filename")?.GetStringValue());
+                        }
+                        catch (ArgumentException e)
+                        { throw new InvalidDataException($"Invalid chronos_files[{j}] for slot {config.Slot}: {e.Message}", e); }
+
+                        if (config.ChronosFileEntry != null)
+                            throw new InvalidDataException(
+                                $"Slot {config.Slot}: chronos_file и chronos_files заданы одновременно — оставь что-то одно.");
+                        config.ChronosFileEntry = parsed;
+                    }
+                }
+
+                // Запасной файл для хабов ставится ТОЛЬКО когда слот не задал свой —
+                // иначе он занимал бы основное поле, а файл из конфига уезжал в носители.
+                if (config.ChronosFileEntry == null
+                    && (config.Slot == EventData.COLLAB_EVENT_SLOT || config.Slot == EventData.SPECIAL_EVENT_SLOT))
+                    config.ChronosFileEntry = DefaultCollabFile;
+
+                LogicJSONArray gameModes = slot.GetJSONArray("game_modes");
+                if (gameModes == null && config.Slot != EventData.COLLAB_EVENT_SLOT)
+                    throw new InvalidDataException($"Missing game_modes for slot {config.Slot}.");
+                config.AllowedModes = new string[gameModes?.Size() ?? 0];
+                
+                if (slot.GetJSONNumber("boss_character") != null)
+                    config.BossCharacterId = slot.GetJSONNumber("boss_character").GetIntValue();
+
+                // Проверяем наличие ключа location
+                if (slot.GetJSONNumber("location") != null)
+                    config.location = slot.GetJSONNumber("location").GetIntValue();
+
+                for (int j = 0; j < config.AllowedModes.Length; j++)
+                {
+                    config.AllowedModes[j] = gameModes.GetJSONString(j).GetStringValue();
+                }
+
+                configs[i] = config;
+            }
+            // The client caches by filename. Sharing a file is fine; conflicting hashes are not.
+            foreach (var file in configs.Select(c => c.ChronosFileEntry)
+                .Append(slotIds.Contains(EventData.COLLAB_EVENT_SLOT) ? null : DefaultCollabFile))
+            {
+                if (file == null) continue;
+                var filename = file.Filename.StartsWith("/", StringComparison.Ordinal) ? file.Filename.Substring(1) : file.Filename;
+                if (filename.Length == 0)
+                    throw new InvalidDataException("Chronos filename must not be just '/'.");
+                if (files.TryGetValue(filename, out var hash) && hash != file.Hash)
+                    throw new InvalidDataException($"Conflicting Chronos hashes for {file.Filename}.");
+                files[filename] = file.Hash;
+            }
+            return configs;
+        }
+
+        // --- ЛОГИКА СБОРА ЖЕТОНОВ (ИЗ v29) ---
+
+        public static bool CollectEvent(long id, int slot)
+        {
+            lock (SlotsCollectedLock)
+            {
+                if (!SlotsCollected.ContainsKey(slot)) return false;
+                if (SlotsCollected[slot].Contains(id)) return false;
+                
+                SlotsCollected[slot].Add(id);
+                return true;
+            }
+        }
+
+        public static bool PlaySlot(long id, int slot)
+        {
+            lock (SlotsPlayedLock)
+            {
+                if (!SlotsPlayed.ContainsKey(slot)) return false;
+                if (SlotsPlayed[slot].Contains(id)) return false;
+
+                SlotsPlayed[slot].Add(id);
+                return true;
+            }
+        }
+
+        public static bool HasEventBonus(long id, int slot)
+        {
+            lock (SlotsCollectedLock)
+            {
+                return SlotsCollected.ContainsKey(slot) && !SlotsCollected[slot].Contains(id);
+            }
+        }
+
+        public static EventData GetEvent(int i)
+        {
+            lock (SlotsLock)
+            {
+                if (HasSlot(i)) return Slots[i];
+                return null;
+            }
+        }
+
+        public static bool HasSlot(int slot)
+        {
+            lock (SlotsLock)
+            {
+                return Slots != null && Slots.ContainsKey(slot);
+            }
+        }
+
+        public static bool HasLocation(int location)
+        {
+            lock (SlotsLock)
+            {
+                return Locations.Contains(location);
+            }
+        }
+
+        public static EventData[] GetEvents()
+        {
+            lock (SlotsLock)
+            {
+                if (Slots == null || Slots.Count == 0) return new EventData[0];
+                return Slots.Values.ToArray();
+            }
+        }
+
+        // Получение ивентов специально для игрока (с проверкой токенов)
+        public static EventData[] GetEventsById(long id)
+        {
+            lock (SlotsLock)
+            lock (SlotsCollectedLock)
+            {
+                if (Slots == null || Slots.Count == 0) return new EventData[0];
+
+                var eventsArray = new EventData[Slots.Count];
+                int index = 0;
+
+                foreach (var kvp in Slots)
+                {
+                    // Делаем клон, чтобы изменения не затрагивали других игроков
+                    EventData e = kvp.Value.Clone();
+                    
+                    // Если игрок УЖЕ в списке собранных, значит бонус собран (true)
+                    if (SlotsCollected.ContainsKey(e.Slot) && SlotsCollected[e.Slot].Contains(id))
+                    {
+                        e.IsBonusCollected = true;
+                    }
+                    else
+                    {
+                        e.IsBonusCollected = false;
+                    }
+
+                    eventsArray[index] = e;
+                    index++;
+                }
+
+                return eventsArray;
+            }
+        }
+
+        private class EventSlotConfig
+        {
+            public int Slot { get; set; }
+            public string[] AllowedModes { get; set; }
+            public int location;
+            public ChronosFileEntry? ChronosFileEntry { get; set; }
+
+            /// <summary>Глобальный id босса для слотов 45..52; 0 — взять RaidBoss по умолчанию.</summary>
+            public int BossCharacterId { get; set; }
+
+        }
+    }
+}

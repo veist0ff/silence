@@ -1,0 +1,12 @@
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.csproj.AssemblyReference.cache
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.GeneratedMSBuildEditorConfig.editorconfig
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.AssemblyInfoInputs.cache
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.AssemblyInfo.cs
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.csproj.CoreCompileInputs.cache
+/root/v64/HashCore.Laser.Logic/bin/Debug/net10.0/HashCore.Laser.Logic.deps.json
+/root/v64/HashCore.Laser.Logic/bin/Debug/net10.0/HashCore.Laser.Logic.dll
+/root/v64/HashCore.Laser.Logic/bin/Debug/net10.0/HashCore.Laser.Logic.pdb
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.dll
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/refint/HashCore.Laser.Logic.dll
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/HashCore.Laser.Logic.pdb
+/root/v64/HashCore.Laser.Logic/obj/Debug/net10.0/ref/HashCore.Laser.Logic.dll

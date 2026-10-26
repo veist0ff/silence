@@ -1,0 +1,402 @@
+using System;
+using HashCore.Laser.Logic.Battle.Component;
+using HashCore.Laser.Logic.Battle.Structures;
+using HashCore.Laser.Logic.Data;
+using System.Collections.Generic;
+using HashCore.Laser.Logic.Battle.Level;
+using HashCore.Laser.Titan.Math;
+
+namespace HashCore.Laser.Logic.Battle.Objects
+{
+    /// <summary>
+    /// Мозг бота, написан с нуля. Раз в несколько тиков бот оценивает обстановку
+    /// и выбирает одно из состояний: атака, отступление, сбор/ломание ящиков, блуждание.
+    /// Движение — по A* на сетке тайлов, с уклонением от летящих снарядов.
+    /// Стрельба — с упреждением по скорости цели, ульта — когда заряжена и цель в зоне.
+    /// </summary>
+    public partial class Character
+    {
+        private enum BotState { Wander, Fight, Retreat, Loot }
+
+        private BotState m_botState = BotState.Wander;
+        private Character m_botTarget;
+        private LogicVector2 m_botTargetPrev;
+        private int m_botThinkTick = -100;
+        private int m_botPathTick = -100;
+        private int m_botStrafeDir = 1;
+        private int m_botStrafeTick;
+        private int m_botAttackTick = -100;
+        private int m_botReaction;
+        private List<LogicVector2> m_botPath;
+        private int m_botPathIndex;
+        private LogicVector2 m_botGoal;
+        private LogicVector2 m_botWanderGoal;
+
+        private const int TILE = 300;
+        public static bool BotBrainEnabled = true;
+
+        private void TickBrain()
+        {
+            if (IsControlled || !IsAlive()) return;
+            TileMap map = GameObjectManager.GetBattle().GetTileMap();
+            bool hard = m_isBot == 2;
+
+            // --- 1. Оценка обстановки (раз в 6 тиков, у сложного каждые 3) ---
+            if (TicksGone - m_botThinkTick >= (hard ? 3 : 6))
+            {
+                m_botThinkTick = TicksGone;
+                Think(map);
+            }
+
+            int range = AttackRange();
+            LogicVector2 me = GetPosition();
+
+            // --- 2. Уклонение от снарядов важнее всего ---
+            if (TryDodge(map)) { BotShoot(range, hard); return; }
+
+            // --- 3. Движение по состоянию ---
+            switch (m_botState)
+            {
+                case BotState.Fight:
+                {
+                    LogicVector2 t = m_botTarget.GetPosition();
+                    int dist = me.GetDistance(t);
+                    bool los = HasLineOfSight(map, me, t);
+                    int want = range * 70 / 100; // держим дистанцию ~70% дальности
+                    if (range <= 1200) want = 0;  // ближники (Мортис, Булл) лезут вплотную
+
+                    if (!los || dist > range) GoTo(map, t);
+                    else if (dist < want - 300) MoveAway(map, t);
+                    else Strafe(map, t);
+                    break;
+                }
+                case BotState.Retreat:
+                {
+                    if (m_botTarget != null) MoveAway(map, m_botTarget.GetPosition());
+                    break;
+                }
+                case BotState.Loot:
+                case BotState.Wander:
+                    if (m_botGoal != null) GoTo(map, m_botGoal);
+                    break;
+            }
+
+            BotShoot(range, hard);
+        }
+
+        // ================= Решения =================
+
+        private void Think(TileMap map)
+        {
+            LogicVector2 me = GetPosition();
+            Character enemy = null, box = null;
+            int bestScore = int.MaxValue, boxDist = int.MaxValue;
+
+            foreach (GameObject go in GameObjectManager.GetVisibleGameObjects(GetIndex(), GetGlobalID()))
+            {
+                if (go.GetObjectType() != 0) continue;
+                Character c = (Character)go;
+                if (c == this || !c.IsAlive() || c.IsInvisible) continue;
+                if (c.GetIndex() / 16 == GetIndex() / 16) continue;
+                int d = me.GetDistance(c.GetPosition());
+
+                if (c.CharacterData.IsLootBox()) { if (d < boxDist) { boxDist = d; box = c; } continue; }
+                if (!c.CharacterData.IsHero() && !c.CharacterData.IsBoss() && !c.CharacterData.IsTrainingDummy()) continue;
+
+                // Оценка цели: ближе и слабее — лучше; текущую цель держим (без дёрганья).
+                int hpPct = c.m_maxHitpoints > 0 ? c.m_hitpoints * 100 / c.m_maxHitpoints : 100;
+                int score = d + hpPct * 15;
+                if (c == m_botTarget) score -= 800;
+                if (score < bestScore) { bestScore = score; enemy = c; }
+            }
+
+            int myHp = m_maxHitpoints > 0 ? m_hitpoints * 100 / m_maxHitpoints : 100;
+            int range = AttackRange();
+
+            if (enemy != null)
+            {
+                if (enemy != m_botTarget) m_botReaction = TicksGone + 6 + GetBattle().GetRandomInt(6); // «реакция» на новую цель
+                m_botTarget = enemy;
+                int d = me.GetDistance(enemy.GetPosition());
+                int enemyHp = enemy.m_maxHitpoints > 0 ? enemy.m_hitpoints * 100 / enemy.m_maxHitpoints : 100;
+
+                // Отступаем, если мало хп и враг не добивается; возвращаемся после регена.
+                if (m_botState == BotState.Retreat)
+                    m_botState = myHp >= 70 || d > range * 2 ? BotState.Wander : BotState.Retreat;
+                else if (myHp < 30 && enemyHp > myHp && d < range * 3 / 2)
+                    m_botState = BotState.Retreat;
+                else
+                    m_botState = BotState.Fight;
+            }
+            else
+            {
+                m_botTarget = null;
+                m_botState = BotState.Wander;
+            }
+
+            // Нет врага рядом — ломаем ящики (шд) или идём к центру/по карте.
+            if (m_botState == BotState.Wander)
+            {
+                if (box != null)
+                {
+                    m_botState = BotState.Loot;
+                    m_botTarget = box;
+                    m_botGoal = box.GetPosition();
+                }
+                else
+                {
+                    Character far = GetClosestEnemyAnywhere();
+                    if (far != null) m_botGoal = far.GetPosition();
+                    else
+                    {
+                        if (m_botWanderGoal == null || me.GetDistance(m_botWanderGoal) < 600)
+                            m_botWanderGoal = RandomPassable(map);
+                        m_botGoal = m_botWanderGoal;
+                    }
+                }
+            }
+        }
+
+        private Character GetClosestEnemyAnywhere()
+        {
+            Character best = null; int bd = int.MaxValue;
+            foreach (Character c in GameObjectManager.GetCharacters())
+            {
+                if (c == null || !c.IsAlive() || !c.CharacterData.IsHero()) continue;
+                if (c.GetIndex() / 16 == GetIndex() / 16) continue;
+                int d = GetPosition().GetDistance(c.GetPosition());
+                if (d < bd) { bd = d; best = c; }
+            }
+            return best;
+        }
+
+        // ================= Стрельба =================
+
+        private int AttackRange()
+        {
+            Skill w = GetWeaponSkill();
+            int r = w != null ? w.SkillData.CastingRange * 50 : 2000;
+            return LogicMath.Clamp(r, 600, 9000);
+        }
+
+        private void BotShoot(int range, bool hard)
+        {
+            if (m_botTarget == null || !m_botTarget.IsAlive()) return;
+            if (TicksGone < m_botReaction) return;
+            TileMap map = GameObjectManager.GetBattle().GetTileMap();
+            LogicVector2 me = GetPosition();
+            LogicVector2 t = m_botTarget.GetPosition();
+            int dist = me.GetDistance(t);
+
+            // Упреждение: скорость цели за последний тик * время полёта (~ дистанция / 55 за тик).
+            LogicVector2 aim = new LogicVector2(t.X, t.Y);
+            if (m_botTargetPrev != null && !m_botTarget.CharacterData.IsLootBox())
+            {
+                int vx = t.X - m_botTargetPrev.X, vy = t.Y - m_botTargetPrev.Y;
+                int flight = LogicMath.Clamp(dist / 55, 0, 25);
+                int acc = hard ? 100 : 70; // обычный бот упреждает не идеально
+                aim.X += vx * flight * acc / 100;
+                aim.Y += vy * flight * acc / 100;
+            }
+            m_botTargetPrev = new LogicVector2(t.X, t.Y);
+
+            if (dist > range + 200) return;
+            if (!HasLineOfSight(map, me, t) && !m_botTarget.CharacterData.IsLootBox()) return;
+
+            // Ульта: заряжена и цель в её дальности (или добиваем ящик — не тратим).
+            Skill ulti = GetUltimateSkill();
+            if (ulti != null && GetPlayer() != null && GetPlayer().HasUlti() && !m_botTarget.CharacterData.IsLootBox())
+            {
+                int ur = LogicMath.Clamp(ulti.SkillData.CastingRange * 50, 600, 10000);
+                if (dist <= ur && TicksGone - m_lastUltiTick > 30)
+                {
+                    m_lastUltiTick = TicksGone;
+                    ActivateSkill(1, aim.X, aim.Y);
+                    return;
+                }
+            }
+
+            Skill w = GetWeaponSkill();
+            if (w == null || !w.HasEnoughCharge()) return;
+            int cd = hard ? 6 : 12; // пауза между выстрелами, чтобы не высаживать все патроны разом
+            if (TicksGone - m_botAttackTick < cd) return;
+            m_botAttackTick = TicksGone;
+            ActivateSkill(0, aim.X, aim.Y);
+        }
+
+        // ================= Движение =================
+
+        private void Strafe(TileMap map, LogicVector2 t)
+        {
+            if (TicksGone - m_botStrafeTick > 20 + GetBattle().GetRandomInt(25))
+            {
+                m_botStrafeTick = TicksGone;
+                if (GetBattle().GetRandomInt(3) == 0) m_botStrafeDir = -m_botStrafeDir;
+            }
+            LogicVector2 me = GetPosition();
+            int ang = LogicMath.GetAngle(t.X - me.X, t.Y - me.Y) + 90 * m_botStrafeDir;
+            int x = me.X + (LogicMath.Cos(ang) * 500 >> 10);
+            int y = me.Y + (LogicMath.Sin(ang) * 500 >> 10);
+            if (Walkable(map, x, y)) MoveTo(0, x, y, 0, 0, 0, 0);
+            else m_botStrafeDir = -m_botStrafeDir;
+        }
+
+        private void MoveAway(TileMap map, LogicVector2 from)
+        {
+            LogicVector2 me = GetPosition();
+            int baseAng = LogicMath.GetAngle(me.X - from.X, me.Y - from.Y);
+            foreach (int off in new[] { 0, 35, -35, 70, -70, 110, -110 })
+            {
+                int a = baseAng + off;
+                int x = me.X + (LogicMath.Cos(a) * 700 >> 10);
+                int y = me.Y + (LogicMath.Sin(a) * 700 >> 10);
+                if (Walkable(map, x, y)) { MoveTo(0, x, y, 0, 0, 0, 0); return; }
+            }
+        }
+
+        private bool TryDodge(TileMap map)
+        {
+            LogicVector2 me = GetPosition();
+            foreach (GameObject go in GameObjectManager.GetGameObjects())
+            {
+                if (go.GetObjectType() != 1) continue;
+                Projectile p = go as Projectile;
+                if (p == null || p.State == 4) continue;
+                if (p.GetIndex() / 16 == GetIndex() / 16) continue;
+                int dx = me.X - p.GetX(), dy = me.Y - p.GetY();
+                int d = LogicMath.Sqrt(dx * dx + dy * dy);
+                if (d > 1800) continue;
+                // Летит ли снаряд к нам: угол между его курсом и направлением на нас.
+                int toMe = LogicMath.GetAngle(dx, dy);
+                int diff = Math.Abs(LogicMath.NormalizeAngle180(p.Angle - toMe));
+                if (diff > 25) continue;
+                int miss = Math.Abs(LogicMath.Sin(diff) * d >> 10);
+                if (miss > p.ProjectileData.Radius + CharacterData.CollisionRadius + 60) continue;
+                // Шаг перпендикулярно курсу, в сторону, где проходимо.
+                foreach (int side in new[] { m_botStrafeDir, -m_botStrafeDir })
+                {
+                    int a = p.Angle + 90 * side;
+                    int x = me.X + (LogicMath.Cos(a) * 450 >> 10);
+                    int y = me.Y + (LogicMath.Sin(a) * 450 >> 10);
+                    if (Walkable(map, x, y)) { m_botStrafeDir = side; MoveTo(0, x, y, 0, 0, 0, 0); return true; }
+                }
+            }
+            return false;
+        }
+
+        private void GoTo(TileMap map, LogicVector2 goal)
+        {
+            LogicVector2 me = GetPosition();
+            if (HasLineOfSight(map, me, goal) && me.GetDistance(goal) < 2500)
+            {
+                MoveTo(0, goal.X, goal.Y, 0, 0, 0, 0);
+                return;
+            }
+            // Путь пересчитываем раз в 15 тиков или когда цель сильно сдвинулась.
+            if (m_botPath == null || TicksGone - m_botPathTick > 15)
+            {
+                m_botPathTick = TicksGone;
+                m_botPath = FindPath(map, me, goal);
+                m_botPathIndex = 0;
+            }
+            if (m_botPath == null || m_botPath.Count == 0) { MoveTo(0, goal.X, goal.Y, 0, 0, 0, 0); return; }
+            while (m_botPathIndex < m_botPath.Count - 1 && me.GetDistance(m_botPath[m_botPathIndex]) < 200) m_botPathIndex++;
+            // Срезаем углы: идём к самой дальней видимой точке пути.
+            int pick = m_botPathIndex;
+            for (int i = m_botPathIndex; i < Math.Min(m_botPath.Count, m_botPathIndex + 6); i++)
+                if (HasLineOfSight(map, me, m_botPath[i])) pick = i;
+            MoveTo(0, m_botPath[pick].X, m_botPath[pick].Y, 0, 0, 0, 0);
+        }
+
+        private List<LogicVector2> FindPath(TileMap map, LogicVector2 from, LogicVector2 to)
+        {
+            int w = map.Width, h = map.Height;
+            int sx = LogicMath.Clamp(from.X / TILE, 0, w - 1), sy = LogicMath.Clamp(from.Y / TILE, 0, h - 1);
+            int gx = LogicMath.Clamp(to.X / TILE, 0, w - 1), gy = LogicMath.Clamp(to.Y / TILE, 0, h - 1);
+            if (!TileFree(map, gx, gy)) { var n = NearestFree(map, gx, gy); if (n == null) return null; gx = n.Value.x; gy = n.Value.y; }
+
+            var g = new int[w, h]; var came = new int[w, h]; var closed = new bool[w, h];
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) { g[i, j] = int.MaxValue; came[i, j] = -1; }
+            var open = new PriorityQueue<(int x, int y), int>();
+            g[sx, sy] = 0; open.Enqueue((sx, sy), 0);
+            int[] dxs = { 1, -1, 0, 0, 1, 1, -1, -1 }, dys = { 0, 0, 1, -1, 1, -1, 1, -1 };
+            int steps = 0;
+            while (open.Count > 0 && steps++ < 4000)
+            {
+                var c = open.Dequeue();
+                if (closed[c.x, c.y]) continue;
+                closed[c.x, c.y] = true;
+                if (c.x == gx && c.y == gy) break;
+                for (int k = 0; k < 8; k++)
+                {
+                    int nx = c.x + dxs[k], ny = c.y + dys[k];
+                    if (nx < 0 || ny < 0 || nx >= w || ny >= h || closed[nx, ny] || !TileFree(map, nx, ny)) continue;
+                    if (k >= 4 && (!TileFree(map, c.x + dxs[k], c.y) || !TileFree(map, c.x, c.y + dys[k]))) continue; // не режем углы стен
+                    int cost = g[c.x, c.y] + (k < 4 ? 10 : 14);
+                    if (cost >= g[nx, ny]) continue;
+                    g[nx, ny] = cost; came[nx, ny] = c.x * h + c.y;
+                    int hh = 10 * (Math.Abs(nx - gx) + Math.Abs(ny - gy));
+                    open.Enqueue((nx, ny), cost + hh);
+                }
+            }
+            if (!closed[gx, gy]) return null;
+            var path = new List<LogicVector2>();
+            int px = gx, py = gy;
+            while (!(px == sx && py == sy) && came[px, py] >= 0)
+            {
+                path.Add(new LogicVector2(px * TILE + TILE / 2, py * TILE + TILE / 2));
+                int p = came[px, py]; px = p / h; py = p % h;
+            }
+            path.Reverse();
+            return path;
+        }
+
+        private (int x, int y)? NearestFree(TileMap map, int x, int y)
+        {
+            for (int r = 1; r < 6; r++)
+                for (int i = -r; i <= r; i++)
+                    for (int j = -r; j <= r; j++)
+                        if (x + i >= 0 && y + j >= 0 && x + i < map.Width && y + j < map.Height && TileFree(map, x + i, y + j))
+                            return (x + i, y + j);
+            return null;
+        }
+
+        private bool TileFree(TileMap map, int tx, int ty)
+        {
+            if (tx < 0 || ty < 0 || tx >= map.Width || ty >= map.Height) return false;
+            Tile t = map.GetTile(tx, ty, true);
+            return t == null || t.Data == null || !t.Data.BlocksMovement;
+        }
+
+        private bool Walkable(TileMap map, int x, int y)
+        {
+            if (x < 150 || y < 150 || x > map.LogicWidth - 150 || y > map.LogicHeight - 150) return false;
+            return TileFree(map, x / TILE, y / TILE);
+        }
+
+        private bool HasLineOfSight(TileMap map, LogicVector2 a, LogicVector2 b)
+        {
+            int d = a.GetDistance(b);
+            int n = Math.Max(1, d / 150);
+            for (int i = 1; i < n; i++)
+            {
+                int x = a.X + (b.X - a.X) * i / n, y = a.Y + (b.Y - a.Y) * i / n;
+                Tile t = map.GetTile(x / TILE, y / TILE, true);
+                if (t != null && t.Data != null && (t.Data.BlocksProjectiles || t.Data.BlocksMovement) && !IsWater(t)) return false;
+            }
+            return true;
+        }
+
+        private static bool IsWater(Tile t) => t.Data.BlocksMovement && !t.Data.BlocksProjectiles;
+
+        private LogicVector2 RandomPassable(TileMap map)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                int tx = GetBattle().GetRandomInt(map.Width), ty = GetBattle().GetRandomInt(map.Height);
+                if (TileFree(map, tx, ty)) return new LogicVector2(tx * TILE + TILE / 2, ty * TILE + TILE / 2);
+            }
+            return new LogicVector2(map.LogicWidth / 2, map.LogicHeight / 2);
+        }
+    }
+}

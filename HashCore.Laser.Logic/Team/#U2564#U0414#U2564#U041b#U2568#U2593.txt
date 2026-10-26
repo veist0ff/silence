@@ -1,0 +1,9 @@
+ ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 18));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 19));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 20));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 21));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 22));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 23));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 24));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 28));
+  ByteStreamHelper::WriteDataReference(a2, *((_DWORD *)a1 + 29));
